@@ -1,15 +1,60 @@
 global:
   timestamp: timestamp
 
+
 jaeger:
-  storage: "memory"
-  roleBinding: true
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
+  provisionDataStore:
+    cassandra: true
+    elasticsearch: false
+    kafka: false
+  
+  nameOverride: "jaeger"
+  fullnameOverride: "jaeger"
+  
+  storage:
+    type: cassandra
+    cassandra:
+      host: cassandra
+      port: 9042
+      tls:
+        enabled: false
+  
+  cassandra:
+    persistence:
+      enabled: true
+  
+  collector:
+    enabled: true
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
           - matchExpressions:
-              - key: gitpod.io/workload_meta
-                operator: In
-                values:
-                  - 'true'
+            - key: gitpod.io/workload_meta
+              operator: In
+              values:
+              - "true"
+  
+  query:
+    enabled: true
+    agentSidecar:
+      enabled: true
+    replicaCount: 1
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: gitpod.io/workload_meta
+              operator: In
+              values:
+              - "true"
+
+  ingester:
+    enabled: false
+  agent:
+    enabled: false
+  spark:
+    enabled: false
+  hotrod:
+    enabled: false

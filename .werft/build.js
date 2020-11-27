@@ -245,6 +245,7 @@ async function deployToDev(version, previewWithHttps, workspaceFeatureFlags, dyn
         exec(`/usr/local/bin/helm3 upgrade --install --timeout 10m -f ../.werft/values.dev.yaml ${flags} gitpod .`);
 
         werft.log('helm', 'installing Jaeger');
+        exec(`/usr/local/bin/helm3 dependencies update ../dev/charts/jaeger`);
         exec(`/usr/local/bin/helm3 upgrade --install -f ../dev/charts/jaeger/values.yaml ${flags} jaeger ../dev/charts/jaeger`);
         werft.log('helm', 'installing Sweeper');
         exec(`/usr/local/bin/helm3 upgrade --install --set image.version=${version} --set command="werft run github -a namespace=${namespace} --remote-job-path .werft/wipe-devstaging.yaml github.com/gitpod-io/gitpod:master" sweeper ../dev/charts/sweeper`);
