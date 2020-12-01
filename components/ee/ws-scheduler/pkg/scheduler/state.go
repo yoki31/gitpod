@@ -171,6 +171,8 @@ func ComputeState(nodes []*corev1.Node, pods []*corev1.Pod, bindings []*Binding)
 		}
 		node.RAM.updateAvailable()
 		node.EphemeralStorage.updateAvailable()
+
+		node.RAM.Available.Sub(res.MustParse("500Mi"))
 	}
 
 	return &State{
