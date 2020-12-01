@@ -69,16 +69,16 @@ type ResourceUsage struct {
 
 func newResourceUsage(total *res.Quantity) ResourceUsage {
 	return ResourceUsage{
-		Total:        total.Copy(),
-		Available:    res.NewQuantity(0, res.BinarySI),
-		UsedHeadless: res.NewQuantity(0, res.BinarySI),
-		UsedOther:    res.NewQuantity(0, res.BinarySI),
-		UsedRegular:  res.NewQuantity(0, res.BinarySI),
+		Total:        total.Copy().ToDec(),
+		Available:    res.NewQuantity(0, res.DecimalSI),
+		UsedHeadless: res.NewQuantity(0, res.DecimalSI),
+		UsedOther:    res.NewQuantity(0, res.DecimalSI),
+		UsedRegular:  res.NewQuantity(0, res.DecimalSI),
 	}
 }
 
 func (r *ResourceUsage) updateAvailable() {
-	r.Available = r.Total.Copy()
+	r.Available = r.Total.Copy().ToDec()
 	r.Available.Sub(*r.UsedHeadless)
 	r.Available.Sub(*r.UsedOther)
 	r.Available.Sub(*r.UsedRegular)
@@ -243,18 +243,18 @@ func (s *State) SortNodesByAvailableRAM(order SortOrder) []*Node {
 
 // podRAMRequest calculates the amount of RAM requested by all containers of the given pod
 func podRAMRequest(pod *corev1.Pod) res.Quantity {
-	requestedRAM := res.NewQuantity(0, res.BinarySI)
+	requestedRAM := res.NewQuantity(0, res.DecimalSI)
 	for _, c := range pod.Spec.Containers {
-		requestedRAM.Add(*c.Resources.Requests.Memory())
+		requestedRAM.Add(*c.Resources.Requests.Memory().ToDec())
 	}
 	return *requestedRAM
 }
 
 // podEphemeralStorageRequest calculates the amount of ephemeral storage requested by all containers of the given pod
 func podEphemeralStorageRequest(pod *corev1.Pod) res.Quantity {
-	requestedEphStorage := res.NewQuantity(0, res.BinarySI)
+	requestedEphStorage := res.NewQuantity(0, res.DecimalSI)
 	for _, c := range pod.Spec.Containers {
-		requestedEphStorage.Add(*c.Resources.Requests.StorageEphemeral())
+		requestedEphStorage.Add(*c.Resources.Requests.StorageEphemeral().ToDec())
 	}
 	return *requestedEphStorage
 }
@@ -270,13 +270,13 @@ func NodeMapToList(m map[string]*Node) []*Node {
 
 // DebugStringResourceUsage returns a debug string describing the used resources
 func (r *ResourceUsage) DebugStringResourceUsage() string {
-	usedRegularGibs := float64(r.UsedRegular.Value()/1024/1024) / float64(1024)
-	usedHeadlessGibs := float64(r.UsedHeadless.Value()/1024/1024) / float64(1024)
-	usedOtherGibs := float64(r.UsedOther.Value()/1024/1024) / float64(1024)
-	totalGibs := float64(r.Total.Value()/1024/1024) / float64(1024)
-	availableGibs := float64(r.Available.Value()/1024/1024) / float64(1024)
+	usedRegularGibs := r.UsedRegular.String()
+	usedHeadlessGibs := r.UsedHeadless.String()
+	usedOtherGibs := r.UsedOther.String()
+	totalGibs := r.Total.String()
+	availableGibs := r.Available.String()
 
-	return fmt.Sprintf("used %0.03f+%0.03f+%0.3f of %0.3f, avail %0.03f GiB", usedRegularGibs, usedHeadlessGibs, usedOtherGibs, totalGibs, availableGibs)
+	return fmt.Sprintf("used %s+%s+%s of %s, avail %s", usedRegularGibs, usedHeadlessGibs, usedOtherGibs, totalGibs, availableGibs)
 }
 
 // DebugStringNodes prints available RAM per node as string for debug purposes

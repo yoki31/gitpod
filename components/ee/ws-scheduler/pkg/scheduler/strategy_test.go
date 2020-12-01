@@ -49,8 +49,8 @@ RAM requested: 6Gi
 Eph. Storage requested: 0
 Nodes:
 - node1:
-  RAM: used 0.000+0.000+8.000 of 10.000, avail 2.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB`,
+  RAM: used 0+0+8Gi of 10Gi, avail 2Gi
+  Eph. Storage: used 0+0+0 of 0, avail 0`,
 		},
 		{
 			Desc:         "single empty node",
@@ -187,11 +187,11 @@ RAM requested: 4Gi
 Eph. Storage requested: 5Gi
 Nodes:
 - node2:
-  RAM: used 4.000+0.000+0.000 of 10.000, avail 6.000 GiB
-  Eph. Storage: used 5.000+0.000+0.000 of 7.000, avail 2.000 GiB
+  RAM: used 4Gi+0+0 of 10Gi, avail 6Gi
+  Eph. Storage: used 5Gi+0+0 of 7Gi, avail 2Gi
 - node1:
-  RAM: used 0.000+0.000+0.000 of 10.000, avail 10.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 3.000, avail 3.000 GiB`,
+  RAM: used 0+0+0 of 10Gi, avail 10Gi
+  Eph. Storage: used 0+0+0 of 3Gi, avail 3Gi`,
 		},
 		{
 			// Should prefer 1 and 2 over 3, but 1 has not enough pod slots and 2 not enough ephemeral storage
@@ -263,7 +263,7 @@ func createNode(name string, ram string, ephemeralStorage string, withImage bool
 			},
 			Images: images,
 			Capacity: corev1.ResourceList{
-				corev1.ResourcePods: *res.NewQuantity(podCapacity, res.BinarySI),
+				corev1.ResourcePods: *res.NewQuantity(podCapacity, res.DecimalSI),
 			},
 		},
 	}

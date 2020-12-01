@@ -31,14 +31,14 @@ func TestState(t *testing.T) {
 			Desc:  "no pods",
 			Nodes: defaultNodeSet(),
 			Expectation: `- node1:
-  RAM: used 0.000+0.000+0.000 of 10.000, avail 10.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB
+  RAM: used 0+0+0 of 10Gi, avail 10Gi
+  Eph. Storage: used 0+0+0 of 0, avail 0
 - node2:
-  RAM: used 0.000+0.000+0.000 of 10.000, avail 10.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB
+  RAM: used 0+0+0 of 10Gi, avail 10Gi
+  Eph. Storage: used 0+0+0 of 0, avail 0
 - node3:
-  RAM: used 0.000+0.000+0.000 of 10.000, avail 10.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB`,
+  RAM: used 0+0+0 of 10Gi, avail 10Gi
+  Eph. Storage: used 0+0+0 of 0, avail 0`,
 		},
 		{
 			Desc:  "other pods only",
@@ -48,14 +48,14 @@ func TestState(t *testing.T) {
 				createNonWorkspacePod("existingPod2", "1Gi", "0Gi", "node2", 10),
 			},
 			Expectation: `- node1:
-  RAM: used 0.000+0.000+1.500 of 10.000, avail 8.500 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB
+  RAM: used 0+0+1536Mi of 10Gi, avail 8704Mi
+  Eph. Storage: used 0+0+0 of 0, avail 0
 - node2:
-  RAM: used 0.000+0.000+1.000 of 10.000, avail 9.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB
+  RAM: used 0+0+1Gi of 10Gi, avail 9Gi
+  Eph. Storage: used 0+0+0 of 0, avail 0
 - node3:
-  RAM: used 0.000+0.000+0.000 of 10.000, avail 10.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB`,
+  RAM: used 0+0+0 of 10Gi, avail 10Gi
+  Eph. Storage: used 0+0+0 of 0, avail 0`,
 		},
 		{
 			Desc:  "some headless pods",
@@ -67,14 +67,14 @@ func TestState(t *testing.T) {
 				createHeadlessWorkspacePod("hp2", "2.22Gi", "0Gi", "node2", 10),
 			},
 			Expectation: `- node1:
-  RAM: used 0.000+0.000+1.500 of 10.000, avail 8.500 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB
+  RAM: used 0+0+1536Mi of 10Gi, avail 8704Mi
+  Eph. Storage: used 0+0+0 of 0, avail 0
 - node2:
-  RAM: used 0.000+3.220+1.000 of 10.000, avail 5.779 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB
+  RAM: used 0+3457448673280m+1Gi of 10Gi, avail 6206227742720m
+  Eph. Storage: used 0+0+0 of 0, avail 0
 - node3:
-  RAM: used 0.000+0.000+0.000 of 10.000, avail 10.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB`,
+  RAM: used 0+0+0 of 10Gi, avail 10Gi
+  Eph. Storage: used 0+0+0 of 0, avail 0`,
 		},
 		{
 			Desc:  "some regular pods",
@@ -86,14 +86,14 @@ func TestState(t *testing.T) {
 				createWorkspacePod("hp2", "3.44Gi", "0Gi", "node1", 10),
 			},
 			Expectation: `- node1:
-  RAM: used 4.439+0.000+1.500 of 10.000, avail 4.060 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB
+  RAM: used 4767413698560m+0+1536Mi of 10Gi, avail 4359391805440m
+  Eph. Storage: used 0+0+0 of 0, avail 0
 - node2:
-  RAM: used 0.000+0.000+1.000 of 10.000, avail 9.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB
+  RAM: used 0+0+1Gi of 10Gi, avail 9Gi
+  Eph. Storage: used 0+0+0 of 0, avail 0
 - node3:
-  RAM: used 0.000+0.000+0.000 of 10.000, avail 10.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 0.000, avail 0.000 GiB`,
+  RAM: used 0+0+0 of 10Gi, avail 10Gi
+  Eph. Storage: used 0+0+0 of 0, avail 0`,
 		},
 		{
 			Desc: "some regular pods with ",
@@ -109,14 +109,14 @@ func TestState(t *testing.T) {
 				createWorkspacePod("hp2", "3.44Gi", "5Gi", "node1", 10),
 			},
 			Expectation: `- node1:
-  RAM: used 4.439+0.000+1.500 of 10.000, avail 4.060 GiB
-  Eph. Storage: used 10.000+0.000+5.000 of 20.000, avail 5.000 GiB
+  RAM: used 4767413698560m+0+1536Mi of 10Gi, avail 4359391805440m
+  Eph. Storage: used 10Gi+0+5Gi of 20Gi, avail 5Gi
 - node2:
-  RAM: used 0.000+0.000+1.000 of 10.000, avail 9.000 GiB
-  Eph. Storage: used 0.000+0.000+2.000 of 10.000, avail 8.000 GiB
+  RAM: used 0+0+1Gi of 10Gi, avail 9Gi
+  Eph. Storage: used 0+0+2Gi of 10Gi, avail 8Gi
 - node3:
-  RAM: used 0.000+0.000+0.000 of 10.000, avail 10.000 GiB
-  Eph. Storage: used 0.000+0.000+0.000 of 10.000, avail 10.000 GiB`,
+  RAM: used 0+0+0 of 10Gi, avail 10Gi
+  Eph. Storage: used 0+0+0 of 10Gi, avail 10Gi`,
 		},
 	}
 
