@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	wsk8s "github.com/gitpod-io/gitpod/common-go/kubernetes"
-	"github.com/gitpod-io/gitpod/common-go/log"
 
 	corev1 "k8s.io/api/core/v1"
 	res "k8s.io/apimachinery/pkg/api/resource"
@@ -122,7 +121,6 @@ func ComputeState(nodes []*corev1.Node, pods []*corev1.Pod, bindings []*Binding)
 	for pod, node := range podToNode {
 		ntp, ok := nodeToPod[node]
 		if !ok {
-			log.WithField("podName", pod).WithField("nodeName", node).Warn("pod is bound to unknown node")
 			continue
 		}
 		ntp[pod] = struct{}{}

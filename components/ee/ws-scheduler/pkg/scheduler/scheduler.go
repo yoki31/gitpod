@@ -356,6 +356,22 @@ func (s *Scheduler) buildState(ctx context.Context, pod *corev1.Pod) (state *Sta
 	}
 
 	state = ComputeState(potentialNodes, allPods, s.localBindingCache.getListOfBindings())
+	var (
+		bindings = s.localBindingCache.getListOfBindings()
+		nns      = make([]string, 0, len(potentialNodes))
+		pds      = make([]string, 0, len(allPods))
+		bns      = make([]string, 0, len(bindings))
+	)
+	for _, n := range potentialNodes {
+		nns = append(nns, n.Name)
+	}
+	for _, p := range allPods {
+		pds = append(pds, p.Name)
+	}
+	for _, b := range bindings {
+		bns = append(bns, fmt.Sprintf("%s on %s", b.Pod.Name, b.NodeName))
+	}
+	log.WithField("potentialNodes", nns).WithField("allPods", pds).WithField("bindings", bns).WithField("state", DebugStringNodes(NodeMapToList(state.Nodes)...)).Debug("ComputeState")
 
 	// The required node services is basically PodAffinity light. They limit the nodes we can schedule
 	// workspace pods to based on other pods running on that node. We do this because we require that
