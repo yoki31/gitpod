@@ -59,7 +59,7 @@
     "build-lib": "yarn copy-schema && tsc -b tsconfig.lib.json && cp -r webpack.entrypoints.js webpack.config.js public ee/public lib/",
     "watch-lib": "tsc -b tsconfig.lib.json -w",
     "start": "export NODE_OPTIONS='--max-old-space-size=3192'; webpack-dev-server --mode=development && yarn copy-schema",
-    "copy-schema": "ls -l ../*gitpod-protocol*/ && mkdir -p public/schemas && (cp ../gitpod-protocol/data/gitpod-schema.json ./public/schemas || cp node_modules/@gitpod/gitpod-protocol/data/gitpod-schema.json ./public/schemas)",
+    "copy-schema": "mkdir -p public/schemas && (cp ../gitpod-protocol/data/gitpod-schema.json ./public/schemas || cp node_modules/@gitpod/gitpod-protocol/data/gitpod-schema.json ./public/schemas)",
     "telepresence": "leeway run .:telepresence"
   },
   "files": [
