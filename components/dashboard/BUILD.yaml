@@ -15,6 +15,7 @@ packages:
       - webpack.config.js
       - webpack.entrypoints.js
       - tsconfig.json
+      - remove-sources.sh
     deps:
       - components/gitpod-protocol:lib
     argdeps:
@@ -44,6 +45,7 @@ packages:
       - webpack.entrypoints.js
       - tsconfig.json
       - tsconfig.lib.json
+      - remove-sources.sh
     deps:
       - components/gitpod-protocol:lib
     config:
