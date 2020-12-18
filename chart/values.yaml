@@ -387,12 +387,6 @@ components:
     registryProxyPort: 8081
     remoteStorage:
       kind: minio
-      minio:
-        endpoint: minio:9000
-        accessKey: EXAMPLEvalue
-        secretKey: Someone.Should/ReallyChangeThisKey!!
-        tmpdir: /tmp
-        region: local
 
   wsScheduler:
     name: "ws-scheduler"

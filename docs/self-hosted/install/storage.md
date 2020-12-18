@@ -2,8 +2,6 @@
 url: /docs/self-hosted/latest/install/storage/
 ---
 
-
-#####TODO
 # Workspace Storage
 
 Gitpod uses bucket storage to persist the contents of workspaces. Each workspace is tarballed into a single archive file which is then uploaded to the bucket.
@@ -16,6 +14,17 @@ By default Gitpod ships with [MinIO](https://min.io/) as built-in bucket storage
 * Bring your own storage bucket: Gitpod can be configured to connect to your own installation of MinIO or Google Cloud Storage compatible storage solution.
 
 This helm chart ships with a [MinIO](https://min.io/) installation for this purpose. 
-Alternatively, you can connect to your own [MinIO](https://min.io/) installation using
- - `echo values/minio.yaml >> configuration.txt`
- - in `values.minio.yaml` change the values to match your installation
+Alternatively, you can connect to your own [MinIO](https://min.io/) installation.
+
+Configure minio in the `values.yaml`:
+```
+minio:
+  # set to false if an external minio is used
+  enabled: true
+  fullnameOverride: minio
+  accessKey: EXAMPLEvalue
+  secretKey: Someone.Should/ReallyChangeThisKey!!
+  serviceAccount:
+    create: true
+    name: minio
+```
