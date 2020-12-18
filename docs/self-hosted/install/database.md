@@ -2,10 +2,10 @@
 url: /docs/self-hosted/latest/install/database/
 ---
 
-
-#####TODO
 #### Database
-Gitpod uses a MySQL database to store user data. By default Gitpod ships with a MySQL database built-in. If you operate your own MySQL database (which we'd recommend in a production setting) you can use that one. You have the following options:
+
+Gitpod uses a MySQL database to store user data. By default Gitpod ships with a MySQL database built-in. 
+If you operate your own MySQL database (which we'd recommend in a production setting) you can use that one. You have the following options:
 
 * Integrated database: If not disabled, this MySQL database is installed in a Kubernetes pod as a part of Gitpod’s Helm chart.
 The database uses a Kubernetes PersistentVolume. We do not recommend using this option fo a production setting.

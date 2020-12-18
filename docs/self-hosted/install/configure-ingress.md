@@ -11,10 +11,6 @@ There are several modes of ingress into your Gitpod installation. They mostly hi
 Compare [values.yaml](https://github.com/gitpod-io/gitpod/blob/master/chart/values.yaml) for details.
 
 
-## Example
-
-#####TODO
-
 ### Domain
 Gitpod requires a domain resolvable by some nameserver (typically a public domain name, e.g. `your-domain.com`).
 As Gitpod launches services and workspaces on additional subdomains it also needs two wildcard domains.
