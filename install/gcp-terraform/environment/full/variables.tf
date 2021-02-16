@@ -16,6 +16,9 @@ variable "container_registry" {
   type = object({
     location = string
   })
+  default = {
+    location = "EU"
+  }
 }
 
 variable "zone_name" {

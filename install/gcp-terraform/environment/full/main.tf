@@ -60,7 +60,6 @@ module "registry" {
   source = "../../modules/registry"
 
   name     = var.subdomain
-  project  = var.project
   location = var.container_registry.location
 
   providers = {
@@ -79,17 +78,16 @@ module "storage" {
   location = "EU"
 }
 
-# module "database" {
-#   source = "../../modules/database"
+module "database" {
+  source = "../../modules/database"
 
-#   project = var.project
-#   name    = var.database.name
-#   region  = local.region
-#   network = {
-#     id   = google_compute_network.gitpod.id
-#     name = google_compute_network.gitpod.name
-#   }
-# }
+  name    = var.database.name
+  region  = local.region
+  network = {
+    id   = google_compute_network.gitpod.id
+    name = google_compute_network.gitpod.name
+  }
+}
 
 #
 # Gitpod
