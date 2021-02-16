@@ -47,9 +47,9 @@ resource "google_service_networking_connection" "gitpod" {
 #
 
 resource "google_service_account" "gitpod_database" {
-  account_id   = var.name
-  display_name = var.name
-  description  = "Gitpod Database Account ${var.name}"
+  account_id   = "${var.name}-${random_id.database.hex}"
+  display_name = "${var.name}-${random_id.database.hex}"
+  description  = "Gitpod Database Account for database ${var.name}-${random_id.database.hex}"
   project      = var.project
 }
 
