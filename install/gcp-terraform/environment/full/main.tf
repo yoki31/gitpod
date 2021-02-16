@@ -3,6 +3,10 @@
  * Licensed under the MIT License. See License-MIT.txt in the project root for license information.
  */
 
+locals {
+  region = trimsuffix(var.location,local.zone_suffix)
+  zone_suffix = regex("-[a-z]$",var.location)
+}
 
 resource "google_compute_network" "gitpod" {
   name                    = "gitpod"
@@ -17,27 +21,15 @@ module "kubernetes" {
   name    = "gitpod"
   network = google_compute_network.gitpod.name
   project = var.project
-  region  = var.region
+  location  = var.location
 }
 
-
-module "kubeconfig" {
-  source = "../../modules/kubeconfig"
-
-  cluster = {
-    name = "gitpod"
-  }
-
-  depends_on = [
-    module.kubernetes
-  ]
-}
 
 module "dns" {
   source = "../../modules/dns"
 
   project   = var.project
-  region    = var.region
+  location  = var.location
   zone_name = var.zone_name
   name      = "gitpod-dns"
   subdomain = var.subdomain
@@ -83,21 +75,21 @@ module "storage" {
 
   name     = var.subdomain
   project  = var.project
-  region   = var.region
+  region   = local.region
   location = "EU"
 }
 
-module "database" {
-  source = "../../modules/database"
+# module "database" {
+#   source = "../../modules/database"
 
-  project = var.project
-  name    = var.database.name
-  region  = var.region
-  network = {
-    id   = google_compute_network.gitpod.id
-    name = google_compute_network.gitpod.name
-  }
-}
+#   project = var.project
+#   name    = var.database.name
+#   region  = local.region
+#   network = {
+#     id   = google_compute_network.gitpod.id
+#     name = google_compute_network.gitpod.name
+#   }
+# }
 
 #
 # Gitpod
@@ -107,18 +99,19 @@ module "gitpod" {
   source = "../../modules/gitpod"
 
   project            = var.project
-  region             = var.region
   namespace          = var.namespace
   values             = file("values.yaml")
   dns_values         = module.dns.values
   certificate_values = module.certmanager.values
-  database_values    = module.database.values
+  # database_values    = module.database.values
   registry_values    = module.registry.values
   storage_values     = module.storage.values
   license            = var.license
 
   gitpod = {
-    chart        = "../../../../chart"
+    repository   = var.gitpod_repository
+    chart        = var.gitpod_chart
+    version      = var.gitpod_version
     image_prefix = "gcr.io/gitpod-io/self-hosted/"
   }
 

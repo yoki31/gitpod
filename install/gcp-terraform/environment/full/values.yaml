@@ -1,11 +1,6 @@
 ingressMode: noDomain
 certificatesSecret: {}
-
-components:
-  wsProxy:
-    ingress:
-      portRange:
-        start: 10000
-        end: 11000
-
 authProviders: []
+
+mysql:
+  enabled: true

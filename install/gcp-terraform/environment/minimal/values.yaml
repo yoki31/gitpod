@@ -1,0 +1,4 @@
+ingressMode: noDomain
+certificatesSecret: {}
+
+authProviders: []

@@ -8,7 +8,7 @@ variable "project" {
   type = string
 }
 
-variable "region" {
+variable "location" {
   type = string
 }
 
@@ -48,4 +48,17 @@ variable "database" {
 variable "subdomain" {
   type    = string
   default = "gitpod"
+}
+
+
+variable "gitpod_repository" {
+  type = string
+}
+
+variable "gitpod_chart" {
+  type = string
+}
+
+variable "gitpod_version" {
+  type = string
 }
