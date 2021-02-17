@@ -35,8 +35,8 @@ resource "random_id" "gitpod_storage" {
 
 
 resource "google_service_account" "gitpod_storage" {
-  account_id   = "gitpod-storage-${var.name}-${random_id.gitpod_storage.hex}"
-  display_name = "gitpod-storage-${var.name}-${random_id.gitpod_storage.hex}"
+  account_id   = "${var.name}-${random_id.gitpod_storage.hex}"
+  display_name = "${var.name}-${random_id.gitpod_storage.hex}"
   description  = "gitpod-workspace-syncer ${var.name}-${random_id.gitpod_storage.hex}"
   project      = data.google_project.project.project_id
 }
