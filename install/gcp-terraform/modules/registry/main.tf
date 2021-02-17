@@ -32,8 +32,8 @@ resource "random_id" "gitpod_registry" {
 }
 
 resource "google_service_account" "gitpod_registry" {
-  account_id   = "gitpod-registry-${var.name}-${random_id.gitpod_registry.hex}"
-  display_name = "gitpod-registry-${var.name}-${random_id.gitpod_registry.hex}"
+  account_id   = "${var.name}-${random_id.gitpod_registry.hex}"
+  display_name = "${var.name}-${random_id.gitpod_registry.hex}"
   description  = "Gitpod Registry ${var.name}-${random_id.gitpod_registry.hex}"
   project      = data.google_project.gitpod_registry.project_id
 }
