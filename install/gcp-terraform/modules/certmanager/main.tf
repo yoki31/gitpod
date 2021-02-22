@@ -109,6 +109,9 @@ resource "kubectl_manifest" "clusterissuer" {
   ]
 }
 
+locals {
+  shortname = trimsuffix("ws-${var.shortname}","-")
+}
 
 # https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file
 data "template_file" "certificate" {
@@ -118,7 +121,7 @@ data "template_file" "certificate" {
     name      = var.certificate.name
     namespace = var.certificate.namespace
     domain    = var.domain
-    shortname = var.shortname
+    shortname = local.shortname
   }
 }
 
