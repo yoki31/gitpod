@@ -48,7 +48,7 @@ resource "google_dns_record_set" "gitpod" {
 
 resource "google_dns_record_set" "gitpod_ws" {
   count        = length(local.dns_prefixes)
-  name         = "${local.shortname}${var.subdomain}.${data.google_dns_managed_zone.gitpod.dns_name}"
+  name         = "*.${local.shortname}.${var.subdomain}.${data.google_dns_managed_zone.gitpod.dns_name}"
   type         = "A"
   ttl          = 300
   managed_zone = data.google_dns_managed_zone.gitpod.name
