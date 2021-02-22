@@ -24,6 +24,16 @@ variable "subdomain" {
   default = "gitpod"
 }
 
+variable "dns_prefixes" {
+  type = list(string)
+  default = ["","*"]
+}
+
+variable "ws_only" {
+  type = bool
+  default = false
+}
+
 variable "gitpod" {
   type = object({
     namespace = string

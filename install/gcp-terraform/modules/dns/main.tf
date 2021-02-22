@@ -5,7 +5,6 @@
 
 
 locals {
-  dns_prefixes = ["", "*."]
   google_services = [
     "dns.googleapis.com",
     "compute.googleapis.com"
@@ -37,8 +36,8 @@ resource "google_compute_address" "gitpod" {
 }
 
 resource "google_dns_record_set" "gitpod" {
-  count        = length(local.dns_prefixes)
-  name         = "${local.dns_prefixes[count.index]}${var.subdomain}.${data.google_dns_managed_zone.gitpod.dns_name}"
+  count        = length(var.dns_prefixes)
+  name         = trimprefix("${trimsuffix(var.dns_prefixes[count.index],".")}.${var.subdomain}.${data.google_dns_managed_zone.gitpod.dns_name}",".")
   type         = "A"
   ttl          = 300
   managed_zone = data.google_dns_managed_zone.gitpod.name
@@ -47,7 +46,6 @@ resource "google_dns_record_set" "gitpod" {
 }
 
 resource "google_dns_record_set" "gitpod_ws" {
-  count        = length(local.dns_prefixes)
   name         = "*.${local.shortname}.${var.subdomain}.${data.google_dns_managed_zone.gitpod.dns_name}"
   type         = "A"
   ttl          = 300
