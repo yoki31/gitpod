@@ -34,7 +34,7 @@ variable "certificate_values" {
 }
 
 variable "namespace" {
-  type = string
+  type    = string
   default = "default"
 }
 

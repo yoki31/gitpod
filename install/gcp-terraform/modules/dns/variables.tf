@@ -27,8 +27,10 @@ variable "subdomain" {
 variable "gitpod" {
   type = object({
     namespace = string
+    shortname = string
   })
   default = {
     namespace = "default"
+    shortname = ""
   }
 }

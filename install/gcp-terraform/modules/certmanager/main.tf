@@ -69,6 +69,16 @@ resource "helm_release" "certmanager" {
   }
 }
 
+# https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep
+# waits for CRDS to be installed
+resource "time_sleep" "certmanager" {
+  create_duration = "300s"
+
+  depends_on = [
+    helm_release.certmanager
+  ]
+}
+
 locals {
   clusterissuer = {
     name     = "letsencrypt-issuer"
@@ -93,6 +103,10 @@ data "template_file" "cluster_issuer" {
 resource "kubectl_manifest" "clusterissuer" {
   provider  = kubectl
   yaml_body = data.template_file.cluster_issuer.rendered
+
+  depends_on = [
+    time_sleep.certmanager
+  ]
 }
 
 
@@ -104,6 +118,7 @@ data "template_file" "certificate" {
     name      = var.certificate.name
     namespace = var.certificate.namespace
     domain    = var.domain
+    shortname = var.shortname
   }
 }
 
@@ -111,6 +126,10 @@ data "template_file" "certificate" {
 resource "kubectl_manifest" "certificate" {
   provider  = kubectl
   yaml_body = data.template_file.certificate.rendered
+
+  depends_on = [
+    kubectl_manifest.clusterissuer
+  ]
 }
 
 

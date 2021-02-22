@@ -10,8 +10,8 @@ locals {
     "dns.googleapis.com",
     "compute.googleapis.com"
   ]
-  region = trimsuffix(var.location,local.zone_suffix)
-  zone_suffix = regex("-[a-z]$",var.location)
+  region      = trimsuffix(var.location, local.zone_suffix)
+  zone_suffix = regex("-[a-z]$", var.location)
 }
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/dns_managed_zone
@@ -86,5 +86,6 @@ data "template_file" "values" {
   vars = {
     hostname       = local.hostname
     loadBalancerIP = google_compute_address.gitpod.address
+    shortname      = var.gitpod.shortname
   }
 }

@@ -21,7 +21,7 @@ data "template_file" "values" {
 }
 
 resource "helm_release" "gitpod" {
-  name  = "gitpod"
+  name = "gitpod"
 
   repository = var.gitpod.repository
   chart      = var.gitpod.chart

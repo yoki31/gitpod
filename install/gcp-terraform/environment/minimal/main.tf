@@ -7,8 +7,8 @@ locals {
   google_services = [
     "compute.googleapis.com",
   ]
-  region = trimsuffix(var.location,local.zone_suffix)
-  zone_suffix = regex("-[a-z]$",var.location)
+  region      = trimsuffix(var.location, local.zone_suffix)
+  zone_suffix = regex("-[a-z]$", var.location)
 }
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_service
@@ -28,32 +28,32 @@ resource "google_compute_network" "gitpod" {
   auto_create_subnetworks = false
   project                 = var.project
 
-  depends_on = [ 
+  depends_on = [
     google_project_service.main,
-   ]
+  ]
 }
 
 module "kubernetes" {
   source = "../../modules/kubernetes"
 
-  name    = "gitpod"
-  network = google_compute_network.gitpod.name
-  project = var.project
-  location  = var.location
+  name     = "gitpod"
+  network  = google_compute_network.gitpod.name
+  project  = var.project
+  location = var.location
 }
 
 module "dns" {
   source = "../../modules/dns"
 
   project   = var.project
-  location    = var.location
+  location  = var.location
   zone_name = var.zone_name
   name      = "gitpod-dns"
   subdomain = var.subdomain
 
-  depends_on = [ 
+  depends_on = [
     module.kubernetes,
-   ]
+  ]
 
   providers = {
     google     = google
@@ -76,10 +76,10 @@ module "certmanager" {
     kubectl    = kubectl
   }
 
-  depends_on = [ 
+  depends_on = [
     module.kubernetes,
     module.dns,
-   ]
+  ]
 }
 
 #

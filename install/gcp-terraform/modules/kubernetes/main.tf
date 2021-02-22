@@ -22,8 +22,8 @@ locals {
     "container.googleapis.com",
     "logging.googleapis.com",
   ]
-  region = trimsuffix(var.location,local.zone_suffix)
-  zone_suffix = regex("-[a-z]$",var.location)
+  region      = trimsuffix(var.location, local.zone_suffix)
+  zone_suffix = regex("-[a-z]$", var.location)
 }
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_service
@@ -42,7 +42,7 @@ resource "google_compute_subnetwork" "gitpod" {
   region                   = local.region
   network                  = var.network
   private_ip_google_access = true
-  
+
   depends_on = [
     local.google_services
   ]

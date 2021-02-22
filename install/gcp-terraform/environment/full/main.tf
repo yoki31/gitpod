@@ -4,8 +4,8 @@
  */
 
 locals {
-  region = trimsuffix(var.location,local.zone_suffix)
-  zone_suffix = regex("-[a-z]$",var.location)
+  region      = trimsuffix(var.location, local.zone_suffix)
+  zone_suffix = regex("-[a-z]$", var.location)
 }
 
 resource "google_compute_network" "gitpod" {
@@ -18,10 +18,10 @@ resource "google_compute_network" "gitpod" {
 module "kubernetes" {
   source = "../../modules/kubernetes"
 
-  name    = "gitpod"
-  network = google_compute_network.gitpod.name
-  project = var.project
-  location  = var.location
+  name     = "gitpod"
+  network  = google_compute_network.gitpod.name
+  project  = var.project
+  location = var.location
 }
 
 
@@ -81,8 +81,8 @@ module "storage" {
 module "database" {
   source = "../../modules/database"
 
-  name    = var.database.name
-  region  = local.region
+  name   = var.database.name
+  region = local.region
   network = {
     id   = google_compute_network.gitpod.id
     name = google_compute_network.gitpod.name
@@ -102,9 +102,9 @@ module "gitpod" {
   dns_values         = module.dns.values
   certificate_values = module.certmanager.values
   # database_values    = module.database.values
-  registry_values    = module.registry.values
-  storage_values     = module.storage.values
-  license            = var.license
+  registry_values = module.registry.values
+  storage_values  = module.storage.values
+  license         = var.license
 
   gitpod = {
     repository   = var.gitpod_repository
