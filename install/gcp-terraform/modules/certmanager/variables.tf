@@ -37,7 +37,7 @@ variable "domain" {
 
 variable "shortname" {
   type    = string
-  default = "ws"
+  default = ""
 }
 
 variable "certificate" {
