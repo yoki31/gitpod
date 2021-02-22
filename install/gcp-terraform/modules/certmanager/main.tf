@@ -110,7 +110,7 @@ resource "kubectl_manifest" "clusterissuer" {
 }
 
 locals {
-  shortname = trimsuffix("ws-${var.shortname}","-")
+  shortname = trimsuffix("ws-${var.shortname}", "-")
 }
 
 # https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file
