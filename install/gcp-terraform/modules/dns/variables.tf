@@ -29,11 +29,6 @@ variable "dns_prefixes" {
   default = ["","*"]
 }
 
-variable "ws_only" {
-  type = bool
-  default = false
-}
-
 variable "gitpod" {
   type = object({
     namespace = string
