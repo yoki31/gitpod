@@ -505,8 +505,8 @@ docker-registry:
 minio:
   enabled: true
   fullnameOverride: minio
-  accessKey: # create random accesskey and secretkey
-  secretKey: # create random accesskey and secretkey
+  accessKey: skndklasnd # create random accesskey and secretkey
+  secretKey: sadmsamdpm # create random accesskey and secretkey
   serviceAccount:
     create: true
     name: minio

@@ -54,16 +54,24 @@ spec:
           mountPath: /var/lib/mysql
         - name: init
           mountPath: /docker-entrypoint-initdb.d
+        - name: test-volume
+          mountPath: /host
       volumes:
       - name: init
         configMap:
           name: db-init-scripts
+      - name: test-volume
+        hostPath:
+        # directory location on host
+          path: /var
+        # this field is optional
+          type: Directory
   volumeClaimTemplates:
   - metadata:
       name: data
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: standard
+      storageClassName: gp2
       resources:
         requests:
           storage: 10Gi

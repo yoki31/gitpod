@@ -1,0 +1,8 @@
+ingressMode: noDomain
+certificatesSecret: {}
+
+components:
+  wsDaemon:
+    containerRuntime:
+      nodeRoots:
+      - /run/containerd/io.containerd.runtime.v1.linux/moby

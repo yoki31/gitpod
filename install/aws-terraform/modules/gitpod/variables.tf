@@ -3,46 +3,60 @@
  * Licensed under the MIT License. See License-MIT.txt in the project root for license information.
  */
 
-variable "gitpod" {
-  type = object({
-    valuesFiles = list(string)
-    namespace   = string
-  })
-  default = {
-    valuesFiles = []
-    namespace   = "default"
-  }
+variable "domain" {
+    type = string
 }
 
-variable "helm" {
-  type = object({
-    chart = string
-  })
+variable "subdomain" {
+    type = string
+    default = "gitpod"
 }
 
-variable "domain_name" {
-  type = string
+variable "database_values" {
+  type    = string
+  default = ""
 }
 
-variable "cluster_name" {
-  type = string
+variable "storage_values" {
+  type    = string
+  default = ""
 }
 
-variable "auth_providers" {
-  type = list(
-    object({
-      id            = string
-      host          = string
-      client_id     = string
-      client_secret = string
-      settings_url  = string
-      callback_url  = string
-      protocol      = string
-      type          = string
-    })
-  )
+variable "registry_values" {
+  type    = string
+  default = ""
+}
+
+variable "dns_values" {
+  type    = string
+  default = ""
+}
+
+variable "certificate_values" {
+  type    = string
+  default = ""
+}
+
+variable "namespace" {
+  type    = string
+  default = "default"
 }
 
 variable "values" {
-  type = list(string)
+  type    = string
+  default = ""
+}
+
+variable "gitpod" {
+  type = object({
+    repository   = string
+    chart        = string
+    version      = string
+    image_prefix = string
+  })
+}
+
+variable "license" {
+  type    = string
+  default = ""
 }

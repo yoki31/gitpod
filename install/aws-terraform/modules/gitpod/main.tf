@@ -3,21 +3,56 @@
  * Licensed under the MIT License. See License-MIT.txt in the project root for license information.
  */
 
-# Installs Gitpod!
+#
+# Gitpod
+#
 
-# https://www.terraform.io/docs/providers/helm/r/release.html
+data "template_file" "node_layout_values" {
+  template = file("${path.module}/templates/values.node-layout.tpl")
+}
+
+data "template_file" "values" {
+  template = file("${path.module}/templates/values.tpl")
+  vars = {
+    image_prefix = var.gitpod.image_prefix
+    license      = var.license
+    version      = var.gitpod.version
+    hostname     = trim("${var.subdomain}.${var.domain}",".")
+  }
+}
+
 resource "helm_release" "gitpod" {
-  name              = "gitpod"
-  chart             = var.helm.chart
-  wait              = true
-  timeout           = 600
+  name = "gitpod"
+
+  repository = var.gitpod.repository
+  chart      = var.gitpod.chart
+  version    = var.gitpod.version
+
+  namespace         = var.namespace
+  create_namespace  = false
+  cleanup_on_fail   = false
+  wait              = false
   dependency_update = true
 
-  values = flatten([
-    data.template_file.gitpod_values_main.rendered,
-    data.template_file.gitpod_values_auth_provider.rendered,
-    [for path in var.gitpod.valuesFiles : file(path)],
-    var.values
-  ])
+  values = [
+    var.values,
+    data.template_file.node_layout_values.rendered,
+    data.template_file.values.rendered,
+    var.dns_values,
+    var.certificate_values,
+    var.database_values,
+    var.registry_values,
+    var.storage_values,
+  ]
+}
 
+data "kubernetes_service" "proxy" {
+    metadata {
+        name = "proxy"
+        namespace = var.namespace
+    }
+
+  depends_on = [
+      helm_release.gitpod,
+  ]
 }

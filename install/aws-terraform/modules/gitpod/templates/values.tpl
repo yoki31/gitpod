@@ -1,10 +1,8 @@
-hostname: ${domain_name}
+# Copyright (c) 2020 Gitpod GmbH. All rights reserved.
+# Licensed under the MIT License. See License-MIT.txt in the project root for license information.
 
-certificatesSecret:
-    secretName: proxy-config-certificates
-
-components:
-  proxy:
-    loadBalancerIP: null
-      
+hostname: ${hostname}
 installPodSecurityPolicies: true
+imagePrefix: ${image_prefix}
+license: ${license}
+version: ${version}
