@@ -45,14 +45,3 @@ resource "helm_release" "gitpod" {
     var.storage_values,
   ]
 }
-
-data "kubernetes_service" "proxy" {
-    metadata {
-        name = "proxy"
-        namespace = var.namespace
-    }
-
-  depends_on = [
-      helm_release.gitpod,
-  ]
-}

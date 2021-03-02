@@ -5,17 +5,17 @@
 
 
 locals {
-  hostname = trimsuffix("${var.subdomain}.${data.aws_route53_zone.gitpod.name}", ".")
-  shortname   = trimsuffix("ws-${var.gitpod.shortname}", "-")
+  hostname = trim("${var.subdomain}.${data.aws_route53_zone.gitpod.name}", ".")
+  ws_shortname   = trim("ws-${var.gitpod.shortname}", "-")
 }
 
 data "aws_route53_zone" "gitpod" {
   name         = var.zone_name
 }
 
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/elb
-data "aws_elb" "gitpod" {
-  name = substr(var.loadbalancer,0,32)
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip
+resource "aws_eip" "gitpod" {
+    count = length(var.subnet_ids)
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record
@@ -24,21 +24,15 @@ resource "aws_route53_record" "gitpod" {
   zone_id = data.aws_route53_zone.gitpod.zone_id
   name    = trimprefix("${trimsuffix(var.dns_prefixes[count.index], ".")}.${var.subdomain}.${data.aws_route53_zone.gitpod.name}", ".")
   type    = "A"
-  alias {
-    name                   = data.aws_elb.gitpod.dns_name
-    zone_id                = data.aws_elb.gitpod.zone_id
-    evaluate_target_health = true
-  }
+  ttl = "300"
+  records = aws_eip.gitpod.*.public_ip
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record
 resource "aws_route53_record" "gitpod_ws" {
   zone_id = data.aws_route53_zone.gitpod.zone_id
-  name    = "*.${local.shortname}.${var.subdomain}.${data.aws_route53_zone.gitpod.name}"
+  name    = "*.${local.ws_shortname}.${var.subdomain}.${data.aws_route53_zone.gitpod.name}"
   type    = "A"
-  alias {
-    name                   = data.aws_elb.gitpod.dns_name
-    zone_id                = data.aws_elb.gitpod.zone_id
-    evaluate_target_health = true
-  }
+  ttl = "330"
+  records = aws_eip.gitpod.*.public_ip
 }

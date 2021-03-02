@@ -29,6 +29,17 @@ module "kubernetes" {
   }
 }
 
+
+module "dns" {
+    source = "../../modules/dns"
+
+    zone_name = var.dns_zone_name
+    vpc_id = module.kubernetes.vpc_id
+    subnet_ids = module.kubernetes.subnet_ids
+}
+
+
+
 module "certmanager" {
   source = "../../modules/certmanager"
 
@@ -49,12 +60,12 @@ module "certmanager" {
   ]
 }
 
-
 module "gitpod" {
   source = "../../modules/gitpod"
 
   values             = file("values.yaml")
   domain = var.dns_zone_name
+  dns_values = module.dns.values
   certificate_values = module.certmanager.values
   gitpod = {
     repository   = null
@@ -65,13 +76,4 @@ module "gitpod" {
   depends_on = [
     module.kubernetes,
   ]
-}
-
-module "dns" {
-    source = "../../modules/dns"
-
-    loadbalancer = module.gitpod.loadbalancer    
-    zone_name = var.dns_zone_name
-    vpc_id = module.kubernetes.vpc_id
-    subnet_ids = module.kubernetes.subnet_ids
 }

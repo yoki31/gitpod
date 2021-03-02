@@ -6,3 +6,10 @@ installPodSecurityPolicies: true
 imagePrefix: ${image_prefix}
 license: ${license}
 version: ${version}
+
+components:
+  wsDaemon:
+    containerRuntime:
+      nodeRoots:
+      - /var/lib
+      - /run/containerd/io.containerd.runtime.v1.linux/moby
