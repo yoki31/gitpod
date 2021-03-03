@@ -17,7 +17,7 @@ data "template_file" "values" {
     image_prefix = var.gitpod.image_prefix
     license      = var.license
     version      = var.gitpod.version
-    hostname     = trim("${var.subdomain}.${var.domain}",".")
+    hostname     = trim("${var.subdomain}.${var.domain}", ".")
   }
 }
 

@@ -70,8 +70,8 @@ resource "aws_iam_role_policy_attachment" "node_group" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami
 data "aws_ami" "ubuntu" {
-  most_recent      = true
-  owners           = [var.ami.owner]
+  most_recent = true
+  owners      = [var.ami.owner]
 
   filter {
     name   = "name"
@@ -118,7 +118,7 @@ resource "aws_launch_template" "node_group" {
 
   image_id = data.aws_ami.ubuntu.id
 
-  instance_type = "m5.large"
+  instance_type = var.node_group.instance_type
 
   monitoring {
     enabled = true
@@ -153,14 +153,14 @@ resource "aws_launch_template" "node_group" {
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_node_group
 resource "aws_eks_node_group" "node_group" {
   cluster_name    = aws_eks_cluster.gitpod.name
-  node_group_name = "${var.cluster.name}-nodegroup1"
+  node_group_name = var.node_group.name
   node_role_arn   = aws_iam_role.node_group.arn
   subnet_ids      = aws_subnet.public[*].id
 
   scaling_config {
-    desired_size = 3
-    max_size     = 3
-    min_size     = 3
+    desired_size = var.node_group.desired_size
+    max_size     = var.node_group.max_size
+    min_size     = var.node_group.min_size
   }
 
   launch_template {

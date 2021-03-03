@@ -4,13 +4,6 @@
  */
 
 locals {
-  kubernetes = {
-    cluster_name   = "gitpod${var.project == "" ? "" : "-${var.project}"}"
-    version        = "1.17"
-    min_node_count = 1
-    max_node_count = 3
-    instance_type  = "m4.large"
-  }
   vpc = {
     name = "gitpod${var.project == "" ? "" : "-${var.project}"}"
   }
@@ -31,11 +24,11 @@ module "kubernetes" {
 
 
 module "dns" {
-    source = "../../modules/dns"
+  source = "../../modules/dns"
 
-    zone_name = var.dns_zone_name
-    vpc_id = module.kubernetes.vpc_id
-    subnet_ids = module.kubernetes.subnet_ids
+  zone_name  = var.dns_zone_name
+  vpc_id     = module.kubernetes.vpc_id
+  subnet_ids = module.kubernetes.subnet_ids
 }
 
 
@@ -43,13 +36,13 @@ module "dns" {
 module "certmanager" {
   source = "../../modules/certmanager"
 
-  zone_name = var.dns_zone_name
-  email   = var.certificate_email
+  zone_name       = var.dns_zone_name
+  email           = var.certificate_email
   gitpod-node-arn = module.kubernetes.worker_iam_role_arn
-  region = var.region
+  region          = var.region
 
   providers = {
-    aws     = aws
+    aws        = aws
     kubernetes = kubernetes
     helm       = helm
     kubectl    = kubectl
@@ -64,8 +57,8 @@ module "gitpod" {
   source = "../../modules/gitpod"
 
   values             = file("values.yaml")
-  domain = var.dns_zone_name
-  dns_values = module.dns.values
+  domain             = var.dns_zone_name
+  dns_values         = module.dns.values
   certificate_values = module.certmanager.values
   gitpod = {
     repository   = null

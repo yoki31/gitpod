@@ -24,11 +24,11 @@ variable "certmanager" {
 }
 
 variable "gitpod-node-arn" {
-    type = string
+  type = string
 }
 
 variable "region" {
-    type = string
+  type = string
 }
 
 variable "email" {
@@ -36,12 +36,12 @@ variable "email" {
 }
 
 variable "zone_name" {
-    type = string
+  type = string
 }
 
 variable "subdomain" {
-    type = string
-    default = "gitpod"
+  type    = string
+  default = "gitpod"
 }
 
 variable "shortname" {

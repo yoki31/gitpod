@@ -4,9 +4,9 @@
  */
 
 output "values" {
-    value = templatefile("${path.module}/templates/values.tpl", {
-        hostname = local.hostname
-        shortname = var.gitpod.shortname
-        eip = join(",",aws_eip.gitpod.*.id)
-    })
+  value = templatefile("${path.module}/templates/values.tpl", {
+    hostname  = local.hostname
+    shortname = var.gitpod.shortname
+    eip       = join(",", aws_eip.gitpod.*.id)
+  })
 }

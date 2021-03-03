@@ -12,13 +12,31 @@ variable "cluster" {
 }
 
 variable "ami" {
-    type = object({
-        owner = string
-        name = string
-    })
-    default = {
-        owner = "099720109477"
-        name = "ubuntu-eks/k8s_1.18/images/*"
-    }
+  type = object({
+    owner = string
+    name  = string
+  })
+  default = {
+    owner = "099720109477"
+    name  = "ubuntu-eks/k8s_1.18/images/*"
+  }
 
+}
+
+
+variable "node_group" {
+  type = object({
+    name          = string
+    instance_type = string
+    desired_size  = number
+    min_size      = number
+    max_size      = number
+  })
+  default = {
+    name          = "gitpod-cluster-nodegroup1"
+    instance_type = "m4.large"
+    desired_size  = 1
+    min_size      = 1
+    max_size      = 3
+  }
 }

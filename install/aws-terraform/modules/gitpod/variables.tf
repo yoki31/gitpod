@@ -4,12 +4,12 @@
  */
 
 variable "domain" {
-    type = string
+  type = string
 }
 
 variable "subdomain" {
-    type = string
-    default = "gitpod"
+  type    = string
+  default = "gitpod"
 }
 
 variable "database_values" {

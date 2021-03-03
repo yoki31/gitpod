@@ -15,7 +15,7 @@ variable "region" {
 }
 
 variable "dns_zone_name" {
-    type = string
+  type = string
 }
 
 variable "gitpod_repository" {

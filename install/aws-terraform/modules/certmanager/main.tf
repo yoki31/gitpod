@@ -12,7 +12,7 @@
 
 
 resource "random_id" "certmanager" {
-    byte_length = 4
+  byte_length = 4
 }
 
 # 
@@ -120,15 +120,15 @@ resource "time_sleep" "certmanager" {
 
 
 data "aws_route53_zone" "gitpod" {
-  name         = var.zone_name
+  name = var.zone_name
 }
 
 
 resource "kubectl_manifest" "cluster_issuer" {
   yaml_body = templatefile("${path.module}/templates/clusterissuer.tpl", {
-    email = var.email
-    region = var.region
-    arn = aws_iam_role.certmanager.arn
+    email   = var.email
+    region  = var.region
+    arn     = aws_iam_role.certmanager.arn
     zone_id = data.aws_route53_zone.gitpod.zone_id
   })
 
@@ -151,7 +151,7 @@ resource "kubectl_manifest" "certificate" {
   yaml_body = templatefile("${path.module}/templates/certificate.tpl", {
     name      = var.certificate.name
     namespace = var.certificate.namespace
-    domain    = trimprefix("${var.subdomain}.${data.aws_route53_zone.gitpod.name}",".")
+    domain    = trimprefix("${var.subdomain}.${data.aws_route53_zone.gitpod.name}", ".")
     shortname = local.shortname
   })
 
