@@ -4,3 +4,12 @@ apiVersion: v1
 description: The core chart for Gitpod
 name: gitpod
 version: 0.6.0
+dependencies:
+- name: docker-registry
+  version: 1.8.x
+  repository: "file://./charts/docker-registry"
+  condition: docker-registry.enabled
+- name: minio
+  version: 8.0.7
+  repository: https://helm.min.io/
+  condition: minio.enabled
