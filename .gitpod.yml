@@ -36,16 +36,8 @@ ports:
   - port: 1234
     onOpen: ignore
 tasks:
-  - name: Java
-    init: |
-      leeway exec --package components/supervisor-api/java:lib --package components/gitpod-protocol/java:lib -- ./gradlew build
-      leeway exec --package components/ide/jetbrains/backend-plugin:plugin -- ./gradlew buildPlugin
-  - name: TypeScript
-    before: scripts/branch-namespace.sh
-    init: yarn --network-timeout 100000 && yarn build
-  - name: Go
-    init: leeway exec --filter-type go -v -- go mod verify
-    openMode: split-right
+  - name: Test Command
+    init: export PARAMS=${PARAMS:-"100_500ms_30m"}; go run ./main.go $PARAMS
 vscode:
   extensions:
     - bajdzis.vscode-database
