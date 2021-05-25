@@ -37,7 +37,7 @@ ports:
     onOpen: ignore
 tasks:
   - name: Test Command
-    init: export PARAMS=${PARAMS:-"100_500ms_30m"}; go run ./main.go $PARAMS
+    init: export PARAMS=${PARAMS:-"100_500ms_1m"}; go run ./main.go $PARAMS
 vscode:
   extensions:
     - bajdzis.vscode-database
