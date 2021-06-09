@@ -45,3 +45,5 @@ vscode:
     - hashicorp.terraform
     - stkb.rewrap
     - golang.go
+    - zxh404.vscode-proto3
+    - matthewpi.caddyfile-support
