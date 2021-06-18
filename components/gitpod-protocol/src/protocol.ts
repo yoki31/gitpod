@@ -103,6 +103,8 @@ export interface AdditionalUserData {
     // key is the name of the OAuth client i.e. local app, string the iso date when it was approved
     // TODO(rl): provide a management UX to allow rescinding of approval
     oauthClientsApproved?: { [key: string]: string }
+    // to remember GH Orgs the user installed/updated the GH App for
+    knownGitHubOrgs?: string[];
 }
 
 export interface EmailNotificationSettings {
@@ -1197,12 +1199,22 @@ export interface Terms {
 
 export interface Project {
     id: string;
+    name: string;
     cloneUrl: string;
     teamId: string;
     appInstallationId: string;
     creationTime: string;
     /** This is a flag that triggers the HARD DELETION of this entity */
     deleted?: boolean;
+}
+
+export interface ProjectInfo {
+    id: string;
+    name: string;
+    cloneUrl: string;
+    teamId: string;
+    appInstallationId: string;
+    creationTime: string;
 }
 
 export interface Team {
