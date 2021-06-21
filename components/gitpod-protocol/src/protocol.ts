@@ -1215,6 +1215,18 @@ export interface ProjectInfo {
     teamId: string;
     appInstallationId: string;
     creationTime: string;
+    lastPrebuild?: PrebuildInfo;
+}
+
+export interface PrebuildInfo {
+    id: string;
+    teamId: string;
+    project: string;
+    cloneUrl: string;
+    branch: string;
+    startedAt: string;
+    startedBy: string;
+    status: PrebuiltWorkspaceState;
 }
 
 export interface Team {

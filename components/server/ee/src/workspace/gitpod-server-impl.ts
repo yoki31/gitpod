@@ -7,7 +7,7 @@
 import { injectable, inject } from "inversify";
 import { GitpodServerImpl } from "../../../src/workspace/gitpod-server-impl";
 import { TraceContext } from "@gitpod/gitpod-protocol/lib/util/tracing";
-import { GitpodServer, GitpodClient, AdminGetListRequest, User, AdminGetListResult, Permission, AdminBlockUserRequest, AdminModifyRoleOrPermissionRequest, RoleOrPermission, AdminModifyPermanentWorkspaceFeatureFlagRequest, UserFeatureSettings, AdminGetWorkspacesRequest, WorkspaceAndInstance, GetWorkspaceTimeoutResult, WorkspaceTimeoutDuration, WorkspaceTimeoutValues, SetWorkspaceTimeoutResult, WorkspaceContext, CreateWorkspaceMode, WorkspaceCreationResult, PrebuiltWorkspaceContext, CommitContext, PrebuiltWorkspace, PermissionName, WorkspaceInstance, EduEmailDomain, ProviderRepository } from "@gitpod/gitpod-protocol";
+import { GitpodServer, GitpodClient, AdminGetListRequest, User, AdminGetListResult, Permission, AdminBlockUserRequest, AdminModifyRoleOrPermissionRequest, RoleOrPermission, AdminModifyPermanentWorkspaceFeatureFlagRequest, UserFeatureSettings, AdminGetWorkspacesRequest, WorkspaceAndInstance, GetWorkspaceTimeoutResult, WorkspaceTimeoutDuration, WorkspaceTimeoutValues, SetWorkspaceTimeoutResult, WorkspaceContext, CreateWorkspaceMode, WorkspaceCreationResult, PrebuiltWorkspaceContext, CommitContext, PrebuiltWorkspace, PermissionName, WorkspaceInstance, EduEmailDomain, ProviderRepository, PrebuildInfo } from "@gitpod/gitpod-protocol";
 import { ResponseError } from "vscode-jsonrpc";
 import { TakeSnapshotRequest, AdmissionLevel, ControlAdmissionRequest, StopWorkspacePolicy, DescribeWorkspaceRequest, SetTimeoutRequest } from "@gitpod/ws-manager/lib";
 import { ErrorCodes } from "@gitpod/gitpod-protocol/lib/messaging/error";
@@ -1561,6 +1561,29 @@ export class GitpodServerEEImpl extends GitpodServerImpl<GitpodClient, GitpodSer
         }
 
         return result;
+    }
+
+    public async getPrebuilds(teamId: string, projectName: string): Promise<PrebuildInfo[]> {
+        this.checkAndBlockUser("getPrebuilds");
+
+        const project = (await this.projectDB.findProjectsByTeam(teamId)).find(p => p.name === projectName);
+        if (project) {
+            const pws = (await this.workspaceDb.trace({}).findPrebuildsWithWorkpace(project.cloneUrl))[0];
+            if (pws) {
+                return [{
+                    id: pws.prebuild.id,
+                    startedAt: pws.prebuild.creationTime,
+                    startedBy: "Owner",
+                    teamId,
+                    project: projectName,
+                    branch: "main",
+                    cloneUrl: pws.prebuild.cloneURL,
+                    status: pws.prebuild.state
+                }]
+            }
+        }
+
+        return [];
     }
     //
     //#endregion

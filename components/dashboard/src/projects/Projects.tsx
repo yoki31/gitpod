@@ -4,6 +4,7 @@
  * See License-AGPL.txt in the project root for license information.
  */
 
+import moment from "moment";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import projectsEmpty from '../images/projects-empty.svg';
@@ -28,6 +29,18 @@ export default function () {
         }
         (async () => {
             const infos = await getGitpodService().server.getProjects(team.id);
+            for (const dummy of infos) {
+                dummy.lastPrebuild = {
+                    id: "123",
+                    branch: "feature-branch",
+                    cloneUrl: "http://github.com/cool-test-org/foo",
+                    startedAt: "2021-06-20T08:45:16.807Z",
+                    startedBy: "AlexTugarev",
+                    project: "lama",
+                    status: "available",
+                    teamId: "ACME"
+                }
+            }
             setProjects(infos);
         })();
     }, [team]);
@@ -35,6 +48,14 @@ export default function () {
     const onSearchProjects = (searchString: string) => { }
     const onNewProject = () => {
         history.push(`/new?team=${team?.slug}`);
+    }
+
+    const viewAllPrebuilds = (p: ProjectInfo) => {
+        history.push(`/${team?.slug}/${p.name}/prebuilds`);
+    }
+
+    const toRemoteURL = (cloneURL: string) => {
+        return cloneURL.replace("https://", "");
     }
 
     return <>
@@ -73,14 +94,32 @@ export default function () {
                     <button className="ml-2" onClick={() => onNewProject()}>New Project</button>
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-4">
-                    {projects.map(p => (<div key={`project-${p.name}`}
-                        className="border border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl focus:bg-gitpod-kumquat-light transition ease-in-out group">
-                        <div className="p-6">{p.name}</div>
-                        <div className="p-6"></div>
-                        <div className="p-2 px-6 bg-gray-100">No Recent Prebuilds</div>
+                    {projects.map(p => (<div key={`project-${p.id}`} className="h-48">
+                        <div className="h-5/6 border border-gray-200 dark:border-gray-800 rounded-t-xl">
+                            <div className="h-3/4  p-6">
+                                <div className="text-base text-gray-900 dark:text-gray-50 font-medium"><Link to={`/${team?.slug}/${p.name}`}>{p.name}</Link></div>
+                                <p>{toRemoteURL(p.cloneUrl)}</p>
+                            </div>
+                            <div className="h-1/4 px-6 py-1"><p>__ Active Branches</p></div>
+                        </div>
+                        <div className="h-1/6 px-6 border rounded-b-xl dark:border-gray-800 bg-gray-200 cursor-pointer"
+                            onClick={() => viewAllPrebuilds(p)}>
+                            {p.lastPrebuild
+                                ? (<div className="flex flex-row space-x-3 h-full text-sm">
+                                    <div className={"my-auto rounded-full w-3 h-3 text-sm align-middle " + (true ? "bg-green-500" : "bg-gray-400")}>
+                                        &nbsp;
+                                    </div>
+                                    <div className="my-auto">{p.lastPrebuild.branch}</div>
+                                    <div className="my-auto text-gray-400">{moment(p.lastPrebuild.startedAt, "YYYYMMDD").fromNow()}</div>
+                                    <div className="my-auto text-gray-400 flex-grow text-right">View All ⟶</div>
+                                </div>)
+                                : (<div className="flex h-full text-md">
+                                    <p className="my-auto ">No recent prebuilds</p>
+                                </div>)}
+                        </div>
                     </div>))}
                     <div key="new-project"
-                        className="border-dashed border-2 border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl focus:bg-gitpod-kumquat-light transition ease-in-out group">
+                        className="h-48 border-dashed border-2 border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl focus:bg-gitpod-kumquat-light transition ease-in-out group">
                         <Link to={`/new?team=${team?.slug}`}>
                             <div className="flex h-full">
                                 <div className="m-auto">New Project</div>

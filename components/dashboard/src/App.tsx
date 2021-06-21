@@ -33,6 +33,9 @@ const JoinTeam = React.lazy(() => import(/* webpackPrefetch: true */ './teams/Jo
 const Members = React.lazy(() => import(/* webpackPrefetch: true */ './teams/Members'));
 const NewProject = React.lazy(() => import(/* webpackPrefetch: true */ './projects/NewProject'));
 const Projects = React.lazy(() => import(/* webpackPrefetch: true */ './projects/Projects'));
+const Project = React.lazy(() => import(/* webpackPrefetch: true */ './projects/Project'));
+const Prebuilds = React.lazy(() => import(/* webpackPrefetch: true */ './projects/Prebuilds'));
+const Settings = React.lazy(() => import(/* webpackPrefetch: true */ './projects/Settings'));
 const InstallGitHubApp = React.lazy(() => import(/* webpackPrefetch: true */ './prebuilds/InstallGitHubApp'));
 const FromReferrer = React.lazy(() => import(/* webpackPrefetch: true */ './FromReferrer'));
 const UserSearch = React.lazy(() => import(/* webpackPrefetch: true */ './admin/UserSearch'));
@@ -192,11 +195,25 @@ function App() {
                     <Route exact path={`/${team.slug}`}>
                         <Redirect to={`/${team.slug}/projects`} />
                     </Route>
-                    <Route exact path={`/${team.slug}/members`} component={Members} />
-                    <Route exact path={`/${team.slug}/projects`} component={Projects} />
+                    <Route exact path={`/${team.slug}/:maybeProject/:subResource?`} render={(props) => {
+                        const { maybeProject, subResource } = props.match.params;
+                        if (maybeProject === "projects") {
+                            return <Projects />;
+                        }
+                        if (maybeProject === "members") {
+                            return <Members />;
+                        }
+                        if (subResource === "prebuilds") {
+                            return <Prebuilds />;
+                        }
+                        if (subResource === "settings") {
+                            return <Settings />;
+                        }
+                        return <Project />;
+                    }} />
                 </Route>)}
                 <Route path="*" render={
-                    (match) => {
+                    (_match) => {
 
                         return isGitpodIo() ?
                             // delegate to our website to handle the request
