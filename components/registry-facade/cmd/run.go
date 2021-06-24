@@ -5,11 +5,13 @@
 package cmd
 
 import (
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"syscall"
+	"time"
 
 	"github.com/containerd/containerd/remotes"
 	"github.com/containerd/containerd/remotes/docker"
@@ -58,7 +60,7 @@ var runCmd = &cobra.Command{
 
 		promreg := prometheus.NewRegistry()
 		gpreg := prometheus.WrapRegistererWithPrefix("gitpod_registry_facade_", promreg)
-		rtt, err := registry.NewMeasuringRegistryRoundTripper(http.DefaultTransport, prometheus.WrapRegistererWithPrefix("downstream_", gpreg))
+		rtt, err := registry.NewMeasuringRegistryRoundTripper(newDefaultTransport(), prometheus.WrapRegistererWithPrefix("downstream_", gpreg))
 		if err != nil {
 			log.WithError(err).Fatal("cannot registry metrics")
 		}
@@ -116,6 +118,23 @@ var runCmd = &cobra.Command{
 		case <-registryDoneChan:
 		}
 	},
+}
+
+func newDefaultTransport() *http.Transport {
+	return &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout:   30 * time.Second,
+			KeepAlive: 30 * time.Second,
+			DualStack: false,
+		}).DialContext,
+		MaxIdleConns:          0,
+		MaxIdleConnsPerHost:   32,
+		IdleConnTimeout:       30 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 5 * time.Second,
+		DisableKeepAlives:     true,
+	}
 }
 
 func init() {
