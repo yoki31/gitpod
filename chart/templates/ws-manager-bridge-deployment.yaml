@@ -20,7 +20,7 @@ spec:
       component: ws-manager-bridge
       kind: pod
       stage: {{ .Values.installation.stage }}
-  replicas: {{ $comp.replicas | default 1 }}
+  replicas: {{ $comp.replicas | default 0 }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
