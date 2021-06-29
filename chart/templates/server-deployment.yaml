@@ -67,7 +67,7 @@ spec:
       component: server
       kind: pod
       stage: {{ .Values.installation.stage }}
-  replicas: {{ $comp.replicas }}
+  replicas: {{ $comp.replicas | default 1 }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
