@@ -9,7 +9,6 @@ export class IssueCertificateParams {
     dnsZoneDomain: string
     domain: string
     ip: string
-    // additionalWsSubdomains: string[]
     additionalSubdomains: string[]
     includeBaseDomain: boolean
     pathToKubeConfig: string
@@ -23,10 +22,6 @@ export class InstallCertificateParams {
     certSecretName: string
     certNamespace: string
     destinationNamespace: string
-}
-
-function getDefaultSubDomains(): string[] {
-    return [""];
 }
 
 export async function issueCertficate(werft, params: IssueCertificateParams) {
