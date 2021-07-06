@@ -10,7 +10,6 @@ export class IssueCertificateParams {
     domain: string
     ip: string
     additionalSubdomains: string[]
-    includeBaseDomain: boolean
     pathToKubeConfig: string
     bucketPrefixTail: string
     certNamespace: string
@@ -61,7 +60,7 @@ export async function issueCertficate(werft, params: IssueCertificateParams) {
     werft.log('certificate', `waiting until certificate ${params.certNamespace}/${params.namespace} is ready...`)
     let notReadyYet = true;
     for (let i = 0; i < 90 && notReadyYet; i++) {
-        werft.log('certificate', `polling state of certs/${params.namespace}...`)
+        werft.log('certificate', `polling state of ${params.certNamespace}/${params.namespace}...`)
         const result = exec(`export KUBECONFIG=${params.pathToKubeConfig} && kubectl -n ${params.certNamespace} get certificate ${params.namespace} -o jsonpath="{.status.conditions[?(@.type == 'Ready')].status}"`, { silent: true, dontCheckRc: true });
         if (result != undefined && result.code === 0 && result.stdout === "True") {
             notReadyYet = false;
