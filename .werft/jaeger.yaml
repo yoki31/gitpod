@@ -46,6 +46,7 @@ spec:
   ingress:
     enabled: false
 ---
+
 kind: Service
 apiVersion: v1
 metadata:
