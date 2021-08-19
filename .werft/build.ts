@@ -408,7 +408,7 @@ export async function deployToDev(deploymentConfig: DeploymentConfig, workspaceF
 
         exec(`helm dependencies up`);
         exec(`/usr/local/bin/helm3 upgrade --install --timeout 10m -f ../.werft/values.dev.yaml ${flags} ${helmInstallName} .`);
-        exec(`kubectl apply -f ../.werft/jaeger.yaml`);
+        exec(`/usr/local/bin/helm3 upgrade --install --timeout 10m observability ../.werft/charts/observability -n ${namespace}`);
 
         werft.log('helm', 'installing Sweeper');
         const sweeperVersion = deploymentConfig.sweeperImage.split(":")[1];

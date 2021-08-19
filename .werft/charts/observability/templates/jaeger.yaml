@@ -1,0 +1,22 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger
+  namespace: {{ .Release.Namespace }}
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: dev/workload
+                operator: In
+                values:
+                  - workload
+  strategy: allInOne
+  storage:
+    options:
+      memory:
+        max-traces: 100
+  ingress:
+    enabled: false

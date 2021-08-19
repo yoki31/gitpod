@@ -1,0 +1,28 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: jaeger-query-lb
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "external-dns.alpha.kubernetes.io/internal-hostname": "staging-wth-test.statging.gitpod-dev.com"
+  labels:
+    app: jaeger
+    app.kubernetes.io/component: service-query
+    app.kubernetes.io/instance: jaeger
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger-query
+    app.kubernetes.io/part-of: jaeger
+spec:
+  ports:
+    - name: http-query
+      protocol: TCP
+      port: 16686
+      targetPort: 16686
+  selector:
+    app: jaeger
+    app.kubernetes.io/component: all-in-one
+    app.kubernetes.io/instance: jaeger
+    app.kubernetes.io/managed-by: jaeger-operator
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/part-of: jaeger
+  type: LoadBalancer
