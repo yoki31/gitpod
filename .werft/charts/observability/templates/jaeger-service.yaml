@@ -4,7 +4,7 @@ metadata:
   name: jaeger-query-lb
   namespace: {{ .Release.Namespace }}
   annotations:
-    "external-dns.alpha.kubernetes.io/internal-hostname": "staging-wth-test.statging.gitpod-dev.com"
+    "external-dns.alpha.kubernetes.io/internal-hostname": "{{ .Release.Namespace }}.statging.gitpod-dev.com"
   labels:
     app: jaeger
     app.kubernetes.io/component: service-query
