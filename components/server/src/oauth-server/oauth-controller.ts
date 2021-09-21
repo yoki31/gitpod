@@ -8,9 +8,11 @@ import { AuthCodeRepositoryDB } from '@gitpod/gitpod-db/lib/typeorm/auth-code-re
 import { UserDB } from '@gitpod/gitpod-db/lib/user-db';
 import { User } from "@gitpod/gitpod-protocol";
 import { log } from '@gitpod/gitpod-protocol/lib/util/logging';
-import { OAuthException, OAuthRequest, OAuthResponse } from "@jmondi/oauth2-server";
+import { OAuthRequest, OAuthResponse } from "@jmondi/oauth2-server";
+import { handleExpressResponse, handleExpressError } from "@jmondi/oauth2-server/dist/adapters/express"
 import * as express from 'express';
 import { inject, injectable } from "inversify";
+import { URL } from 'url';
 import { Config } from '../config';
 import { clientRepository, createAuthorizationServer } from './oauth-authorization-server';
 
@@ -40,7 +42,7 @@ export class OAuthController {
     }
 
     private async hasApproval(user: User, clientID: string, req: express.Request, res: express.Response): Promise<boolean> {
-        // Have they just authorized, or not, the local-app?
+        // Have they just authorized, or not, registered clients?
         const wasApproved = req.query['approved'] || '';
         if (wasApproved === 'no') {
             const additionalData = user?.additionalData;
@@ -49,14 +51,25 @@ export class OAuthController {
                 await this.userDb.updateUserPartial(user);
             }
 
-            // Let the local app know they rejected the approval
-            const rt = req.query.redirect_uri;
-            if (!rt || !rt.startsWith("http://127.0.0.1:")) {
-                log.error(`/oauth/authorize: invalid returnTo URL: "${rt}"`)
+            // Let the client know they rejected the approval
+            const client = await clientRepository.getByIdentifier(clientID);
+            if (client) {
+                const normalizedRedirectUri = new URL(req.query.redirect_uri);
+                normalizedRedirectUri.search = '';
+
+                if (!client.redirectUris.some(u => new URL(u).toString() === normalizedRedirectUri.toString())) {
+                    log.error(`/oauth/authorize: invalid returnTo URL: "${req.query.redirect_uri}"`)
+                    res.sendStatus(400);
+                    return false;
+                }
+            } else {
+                log.error(`/oauth/authorize unknown client id: "${clientID}"`)
                 res.sendStatus(400);
                 return false;
             }
-            res.redirect(`${rt}/?approved=no`);
+            const redirectUri = new URL(req.query.redirect_uri);
+            redirectUri.searchParams.append('approved', 'no');
+            res.redirect(redirectUri.toString());
             return false;
         } else if (wasApproved == 'yes') {
             const additionalData = user.additionalData = user.additionalData || {};
@@ -123,9 +136,9 @@ export class OAuthController {
 
                 // Return the HTTP redirect response
                 const oauthResponse = await authorizationServer.completeAuthorizationRequest(authRequest);
-                return handleResponse(req, res, oauthResponse);
+                return handleExpressResponse(res, oauthResponse);
             } catch (e) {
-                handleError(e, res);
+                handleExpressError(e, res);
             }
         });
 
@@ -133,42 +146,12 @@ export class OAuthController {
             const response = new OAuthResponse(res);
             try {
                 const oauthResponse = await authorizationServer.respondToAccessTokenRequest(req, response);
-                return handleResponse(req, res, oauthResponse);
+                return handleExpressResponse(res, oauthResponse);
             } catch (e) {
-                handleError(e, res);
+                handleExpressError(e, res);
                 return;
             }
         });
-
-        function handleError(e: Error | undefined, res: express.Response) {
-            if (e instanceof OAuthException) {
-                res.status(e.status);
-                res.send({
-                    status: e.status,
-                    message: e.message,
-                    stack: e.stack,
-                });
-                return;
-            }
-            // Generic error
-            res.status(500)
-            res.send({
-                err: e
-            })
-        }
-
-        function handleResponse(req: express.Request, res: express.Response, response: OAuthResponse) {
-            if (response.status === 302) {
-                if (!response.headers.location) {
-                    throw new Error("missing redirect location");
-                }
-                res.set(response.headers);
-                res.redirect(response.headers.location);
-            } else {
-                res.set(response.headers);
-                res.status(response.status).send(response.body);
-            }
-        }
 
         return router;
     }
