@@ -1,5 +1,6 @@
 image: eu.gcr.io/gitpod-core-dev/dev/dev-environment:cw-gokart.18
 workspaceLocation: gitpod/gitpod-ws.code-workspace
+# test
 checkoutLocation: gitpod
 ports:
   - port: 1337
