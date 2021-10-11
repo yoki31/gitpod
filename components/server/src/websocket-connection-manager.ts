@@ -169,7 +169,7 @@ class GitpodJsonRpcProxyFactory<T extends object> extends JsonRpcProxyFactory<T>
         protected readonly accessGuard: FunctionAccessGuard,
         protected readonly rateLimiter: RateLimiter,
     ) {
-        super();
+        super(undefined, true);
     }
 
     protected async onRequest(method: string, ...args: any[]): Promise<any> {

@@ -95,8 +95,9 @@ export class JsonRpcProxyFactory<T extends object> implements ProxyHandler<T> {
      *
      * @param target - The object to expose to JSON-RPC methods calls.  If this
      *   is omitted, the proxy won't be able to handle requests, only send them.
+     * @param propagateConnectionEvents - If true, the MessageConnection open/close are mapped to proxy open/close
      */
-    constructor(public target?: any) {
+    constructor(public target?: any, protected propagateConnectionEvents: boolean = false) {
         this.waitForConnection();
     }
 
@@ -105,7 +106,9 @@ export class JsonRpcProxyFactory<T extends object> implements ProxyHandler<T> {
             this.connectionPromiseResolve = resolve
         );
         this.connectionPromise.then(connection => {
-            connection.onClose(() => this.fireConnectionClosed());
+            if (this.propagateConnectionEvents) {
+                connection.onClose(() => this.fireConnectionClosed());
+            }
             this.fireConnectionOpened();
         });
     }
