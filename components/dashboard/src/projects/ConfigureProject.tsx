@@ -99,7 +99,9 @@ export default function () {
             try {
                 await detectProjectConfiguration(project);
             } catch (error) {
-                if (error && error.code === ErrorCodes.NOT_AUTHENTICATED) {
+                if (error && error.message && error.message.includes("NotFound")) {
+                    alert('NotFound repro')
+                } else if (error && error.code === ErrorCodes.NOT_AUTHENTICATED) {
                     setShowAuthBanner({ host: new URL(project.cloneUrl).hostname });
                 } else {
                     console.error('Getting project configuration failed', error);
