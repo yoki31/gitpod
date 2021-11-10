@@ -13,7 +13,7 @@ const (
 	// ClusterTypeK3s represents a kubernetes cluster created using k3s distribution on GCP
 	ClusterTypeK3s ClusterType = "k3s"
 	// DefaultRetryAttempts is the default value of retry attempts
-	DefaultRetryAttempts = 3
+	DefaultRetryAttempts = 1
 )
 
 // MetaCluster represents a meta cluster
