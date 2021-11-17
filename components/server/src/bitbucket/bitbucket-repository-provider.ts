@@ -26,6 +26,11 @@ export class BitbucketRepositoryProvider implements RepositoryProvider {
         return { host, owner, name, cloneUrl, description, avatarUrl, webUrl };
     }
 
+    async createRepoFromTemplate(user: User, owner: string, repo: string, templateUrl: string): Promise<Repository> {
+        // todo
+        throw new Error("not implemented yet");
+    }
+
     async getBranch(user: User, owner: string, repo: string, branch: string): Promise<Branch> {
         // todo
         throw new Error("not implemented");

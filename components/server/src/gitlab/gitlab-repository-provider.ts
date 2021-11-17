@@ -33,6 +33,11 @@ export class GitlabRepositoryProvider implements RepositoryProvider {
         return { host, owner, name, cloneUrl, description, avatarUrl, webUrl, defaultBranch };
     }
 
+    async createRepoFromTemplate(user: User, owner: string, repo: string, templateUrl: string): Promise<Repository> {
+        // todo
+        throw new Error("not implemented yet");
+    }
+
     async getBranch(user: User, owner: string, repo: string, branch: string): Promise<Branch> {
         const response = await this.gitlab.run<GitLab.Branch>(user, async g => {
             return g.Branches.show(`${owner}/${repo}`, branch);
