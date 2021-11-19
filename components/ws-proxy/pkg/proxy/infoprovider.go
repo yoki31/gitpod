@@ -119,8 +119,10 @@ func (r *RemoteWorkspaceInfoProvider) Reconcile(ctx context.Context, req ctrl.Re
 func (r *RemoteWorkspaceInfoProvider) SetupWithManager(mgr ctrl.Manager) error {
 	podWorkspaceSelector, err := predicate.LabelSelectorPredicate(metav1.LabelSelector{
 		MatchLabels: map[string]string{
-			"app":       "gitpod",
-			"component": "workspace",
+			"app":           "gitpod",
+			"component":     "workspace",
+			"headless":      "false",
+			"workspaceType": "regular",
 		},
 	})
 	if err != nil {
