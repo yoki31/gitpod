@@ -248,6 +248,7 @@ export class GitHubRestApi {
     public async createRepository(user: User, params: RestEndpointMethodTypes["repos"]["createForAuthenticatedUser"]["parameters"]): Promise<Repository> {
         const key = `createRepository:${params.owner}/${params.owner}:${user.id}`;
         const response = await this.runWithCache(key, user, (api) => api.repos.createForAuthenticatedUser(params));
+        log.debug(`createRepository response: ${JSON.stringify(response, null, 2)}`);
         return response.data;
     }
 
