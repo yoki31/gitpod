@@ -37,7 +37,7 @@ ports:
     onOpen: ignore
 tasks:
   - name: Test Command
-    init: export PREBUILD_PARAMS=${PREBUILD_PARAMS:-"100_500ms_30m_success"}; go run ./main.go $PREBUILD_PARAMS
+    init: export PREBUILD_PARAMS=${PREBUILD_PARAMS:-"100_500ms_30m_success"}; echo $PREBUILD_PARAMS; go run ./main.go $PREBUILD_PARAMS
 vscode:
   extensions:
     - bajdzis.vscode-database
