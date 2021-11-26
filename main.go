@@ -19,6 +19,7 @@ func RandStringBytes(n uint64) string {
 	return string(b)
 }
 
+// trigger build
 func main() {
 	argsRaw := os.Args[1:]
 	if len(argsRaw) != 1 {
