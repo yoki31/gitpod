@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	Component         = "rabbitmq"
+	Component         = "messagebus"
 	CookieSecret      = "messagebus-erlang-cookie"
 	InClusterDbSecret = common.InClusterMessageQueueName
 	TLSSecret         = common.InClusterMessageQueueTLS

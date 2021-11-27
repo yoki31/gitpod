@@ -42,6 +42,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 			Secret:   "Important!Really-Change-This-Key!", // todo(sje): how best to do this?
 		},
 		DefinitelyGpDisabled: false,
+		DevBranch:            ctx.Config.DevBranch,
 		WorkspaceGarbageCollection: WorkspaceGarbageCollection{
 			ChunkLimit:                 1000,
 			ContentChunkLimit:          1000,
