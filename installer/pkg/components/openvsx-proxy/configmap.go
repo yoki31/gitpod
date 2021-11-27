@@ -29,7 +29,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		PrometheusAddr:       fmt.Sprintf(":%d", PrometheusPort),
 	}
 
-	fc, err := json.MarshalIndent(imgcfg, "", " ")
+	fc, err := json.MarshalIndent(imgcfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal openvsx config: %w", err)
 	}

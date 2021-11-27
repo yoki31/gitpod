@@ -25,7 +25,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		VersionManifest: ctx.VersionManifest,
 	}
 
-	fc, err := json.MarshalIndent(gpcfg, "", " ")
+	fc, err := json.MarshalIndent(gpcfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal Gitpod config: %w", err)
 	}

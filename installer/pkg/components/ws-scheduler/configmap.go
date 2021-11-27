@@ -126,7 +126,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		}{Addr: "127.0.0.1:9500"},
 	}
 
-	fc, err := json.MarshalIndent(wsscfg, "", " ")
+	fc, err := json.MarshalIndent(wsscfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal ws-proxy config: %w", err)
 	}

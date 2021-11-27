@@ -30,7 +30,7 @@ func deployment(ctx *common.RenderContext) ([]runtime.Object, error) {
 	}
 
 	// Convert to a JSON string
-	fc, err := json.MarshalIndent(wsmanagerbridge.WSManagerList(), "", " ")
+	fc, err := json.MarshalIndent(wsmanagerbridge.WSManagerList(), "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal server.WorkspaceManagerList config: %w", err)
 	}

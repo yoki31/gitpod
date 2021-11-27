@@ -137,7 +137,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 			Addr: "localhost:6060",
 		},
 	}
-	fc, err := json.MarshalIndent(wsdcfg, "", " ")
+	fc, err := json.MarshalIndent(wsdcfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal ws-daemon config: %w", err)
 	}

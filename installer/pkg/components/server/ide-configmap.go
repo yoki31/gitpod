@@ -42,7 +42,7 @@ func ideconfigmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		SupervisorImage: common.ImageName(ctx.Config.Repository, workspace.SupervisorImage, ctx.VersionManifest.Components.Workspace.Supervisor.Version),
 	}
 
-	fc, err := json.MarshalIndent(idecfg, "", " ")
+	fc, err := json.MarshalIndent(idecfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal server-ide-config config: %w", err)
 	}

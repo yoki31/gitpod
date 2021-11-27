@@ -137,7 +137,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		ChargebeeProviderOptionsFile: "/chargebee/providerOptions",
 	}
 
-	fc, err := json.MarshalIndent(scfg, "", " ")
+	fc, err := json.MarshalIndent(scfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal server config: %w", err)
 	}

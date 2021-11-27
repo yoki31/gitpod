@@ -30,7 +30,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		Storage: common.StorageConfig(ctx),
 	}
 
-	fc, err := json.MarshalIndent(cscfg, "", " ")
+	fc, err := json.MarshalIndent(cscfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal content-service config: %w", err)
 	}

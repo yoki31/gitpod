@@ -53,7 +53,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		},
 	}
 
-	fc, err := json.MarshalIndent(ascfg, "", " ")
+	fc, err := json.MarshalIndent(ascfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal agent-smith config: %w", err)
 	}

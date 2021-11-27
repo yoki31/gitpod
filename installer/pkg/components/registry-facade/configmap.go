@@ -53,7 +53,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		PrometheusAddr: "127.0.0.1:9500",
 	}
 
-	fc, err := json.MarshalIndent(rfcfg, "", " ")
+	fc, err := json.MarshalIndent(rfcfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal registry-facade config: %w", err)
 	}

@@ -68,7 +68,7 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		ReadinessProbeAddr: ":60088",
 	}
 
-	fc, err := json.MarshalIndent(wspcfg, "", " ")
+	fc, err := json.MarshalIndent(wspcfg, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal ws-proxy config: %w", err)
 	}
