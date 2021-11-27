@@ -44,6 +44,8 @@ func (v version) Defaults(in interface{}) error {
 	cfg.Certificate.Name = "https-certificates"
 	cfg.Database.InCluster = pointer.Bool(true)
 	cfg.Metadata.Region = "local"
+	cfg.DevBranch = ""
+	cfg.InstallationShortname = ""
 	cfg.ObjectStorage.InCluster = pointer.Bool(true)
 	cfg.ContainerRegistry.InCluster = pointer.Bool(true)
 	cfg.Jaeger.InCluster = pointer.Bool(true)
@@ -59,10 +61,12 @@ func (v version) Defaults(in interface{}) error {
 }
 
 type Config struct {
-	Kind       InstallationKind `json:"kind" validate:"required,installation_kind"`
-	Domain     string           `json:"domain" validate:"required,fqdn"`
-	Metadata   Metadata         `json:"metadata"`
-	Repository string           `json:"repository" validate:"required,ascii"`
+	Kind                  InstallationKind `json:"kind" validate:"required,installation_kind"`
+	DevBranch             string           `json:"devBranch"`
+	InstallationShortname string           `json:"installationShortname"`
+	Domain                string           `json:"domain" validate:"required,fqdn"`
+	Metadata              Metadata         `json:"metadata"`
+	Repository            string           `json:"repository" validate:"required,ascii"`
 
 	Observability Observability `json:"observability"`
 	Analytics     *Analytics    `json:"analytics,omitempty"`

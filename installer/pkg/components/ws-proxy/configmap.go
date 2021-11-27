@@ -67,6 +67,9 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		PrometheusAddr:     ":60095",
 		ReadinessProbeAddr: ":60088",
 	}
+	if ctx.Config.InstallationShortname != "" {
+		wspcfg.Proxy.GitpodInstallation.WorkspaceHostSuffix = fmt.Sprintf(".ws-%s.%s", ctx.Config.InstallationShortname, ctx.Config.Domain)
+	}
 
 	fc, err := json.MarshalIndent(wspcfg, "", "  ")
 	if err != nil {

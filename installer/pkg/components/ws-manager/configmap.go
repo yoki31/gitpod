@@ -7,11 +7,12 @@ package wsmanager
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
+	"time"
+
 	wsdaemon "github.com/gitpod-io/gitpod/installer/pkg/components/ws-daemon"
 	"k8s.io/utils/pointer"
-	"path/filepath"
 	"sigs.k8s.io/yaml"
-	"time"
 
 	"github.com/gitpod-io/gitpod/common-go/grpc"
 	"github.com/gitpod-io/gitpod/common-go/util"
@@ -127,6 +128,11 @@ func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 		Prometheus: struct {
 			Addr string `json:"addr"`
 		}{Addr: "127.0.0.1:9500"},
+	}
+	if ctx.Config.InstallationShortname != "" {
+		wsmcfg.Manager.WorkspaceURLTemplate = fmt.Sprintf("https://{{ .Prefix }}.ws-%s.%s", ctx.Config.InstallationShortname, ctx.Config.Domain)
+		wsmcfg.Manager.WorkspacePortURLTemplate = fmt.Sprintf("https://{{ .WorkspacePort }}-{{ .Prefix }}.ws-%s.%s", ctx.Config.InstallationShortname, ctx.Config.Domain)
+		wsmcfg.Manager.WorkspaceClusterHost = fmt.Sprintf("ws-%s.%s", ctx.Config.InstallationShortname, ctx.Config.Domain)
 	}
 
 	fc, err := json.MarshalIndent(wsmcfg, "", "  ")

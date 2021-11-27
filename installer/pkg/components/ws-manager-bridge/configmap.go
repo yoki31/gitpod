@@ -17,7 +17,7 @@ import (
 
 func configmap(ctx *common.RenderContext) ([]runtime.Object, error) {
 	wsmbcfg := Configuration{
-		Installation:                        "",
+		Installation:                        ctx.Config.InstallationShortname,
 		WSClusterDBReconcileIntervalSeconds: 60,
 		ControllerIntervalSeconds:           60,
 		ControllerMaxDisconnectSeconds:      150,
