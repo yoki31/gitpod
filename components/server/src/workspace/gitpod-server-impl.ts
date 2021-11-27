@@ -52,6 +52,7 @@ import { InvalidGitpodYMLError } from "./config-provider";
 import { ProjectsService } from "../projects/projects-service";
 import { LocalMessageBroker } from "../messaging/local-message-broker";
 import { CachingBlobServiceClientProvider } from '@gitpod/content-service/lib/sugar';
+import { ProjectSettings } from '@gitpod/gitpod-protocol/src/teams-projects-protocol';
 
 @injectable()
 export class GitpodServerImpl<Client extends GitpodClient, Server extends GitpodServer> implements GitpodServer, Disposable {
@@ -1671,6 +1672,12 @@ export class GitpodServerImpl<Client extends GitpodClient, Server extends Gitpod
             }
             throw error;
         }
+    }
+
+    public async updateProjectSettings(projectId: string, partialSettings: Partial<ProjectSettings>): Promise<void> {
+        const user = this.checkUser("updateProjectSettings");
+        await this.guardProjectOperation(user, projectId, "update");
+        await this.projectsService.updateProjectSettings(projectId, partialSettings);
     }
 
     public async getContentBlobUploadUrl(name: string): Promise<string> {
