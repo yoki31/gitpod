@@ -429,6 +429,8 @@ export async function deployToDevWithInstaller(deploymentConfig: DeploymentConfi
         exec(`yq w -i config.yaml containerRegistry.external.certificate.kind ${"secret"}`, {slice: installerSlices.INSTALLER_RENDER});
         exec(`yq w -i config.yaml containerRegistry.external.certificate.name ${IMAGE_PULL_SECRET_NAME}`, {slice: installerSlices.INSTALLER_RENDER});
         exec(`yq w -i config.yaml domain ${deploymentConfig.domain}`, {slice: installerSlices.INSTALLER_RENDER});
+        exec(`yq w -i config.yaml devBranch ${deploymentConfig.destname}`, {slice: installerSlices.INSTALLER_RENDER});
+        exec(`yq w -i config.yaml installationShortname dev`, {slice: installerSlices.INSTALLER_RENDER});
         exec(`yq w -i config.yaml workspace.runtime.containerdRuntimeDir ${CONTAINERD_RUNTIME_DIR}`, {slice: installerSlices.INSTALLER_RENDER});
 
         // TODO: need to circle back to tracing
