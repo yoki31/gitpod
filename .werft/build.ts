@@ -89,6 +89,9 @@ export async function build(context, version) {
         werft.fail('prep', `Werft job image (${werftImg}) and Gitpod dev image (${devImg}) do not match`);
     }
 
+    // Add version tag to all Go components
+    shell.exec(`yq w -i .werft/values.dev.yaml tracing.tags "service.version=${version}"`)
+
     let buildConfig = context.Annotations || {};
     const k3sWsCluster = "k3s-ws" in buildConfig;
     try {

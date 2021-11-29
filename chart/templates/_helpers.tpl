@@ -272,6 +272,10 @@ env:
   value: {{ $tracing.samplerType }}
 - name: JAEGER_SAMPLER_PARAM
   value: "{{ $tracing.samplerParam }}"
+{{- if $tracing.tags }}
+- name: JAEGER_TAGS
+  value:  "{{ $tracing.tags }}"
+{{- end }}
 {{- end }}
 {{- end -}}
 
