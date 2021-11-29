@@ -274,7 +274,7 @@ export default function NewProject() {
                                                 <button className="primary" onClick={() => setSelectedRepo(r.path || r.name)}>Select</button>
                                             ) : (
                                                 <p className="text-gray-500 font-medium">
-                                                    @{r.inUse.userName} already<br/ >added this repo
+                                                    @{r.inUse.userName} already<br/>added this repo
                                                 </p>
                                             )}
                                         </div>
