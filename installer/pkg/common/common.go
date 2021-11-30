@@ -322,6 +322,20 @@ func Affinity(orLabels ...string) *corev1.Affinity {
 	}
 }
 
+func ImagePullSecrets(ctx *RenderContext) []corev1.LocalObjectReference {
+	pullSecrets := make([]corev1.LocalObjectReference, 0)
+
+	if len(ctx.Config.ImagePullSecrets) > 0 {
+		for _, i := range ctx.Config.ImagePullSecrets {
+			pullSecrets = append(pullSecrets, corev1.LocalObjectReference{
+				Name: i.Name,
+			})
+		}
+	}
+
+	return pullSecrets
+}
+
 func RepoName(repo, name string) string {
 	var ref string
 	if repo == "" {

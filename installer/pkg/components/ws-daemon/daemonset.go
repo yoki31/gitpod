@@ -288,6 +288,7 @@ fi
 		DNSPolicy:                     "ClusterFirst",
 		ServiceAccountName:            Component,
 		HostPID:                       true,
+		ImagePullSecrets:              common.ImagePullSecrets(ctx),
 		Affinity:                      common.Affinity(cluster.AffinityLabelWorkspacesRegular, cluster.AffinityLabelWorkspacesHeadless),
 		Tolerations: []corev1.Toleration{
 			{

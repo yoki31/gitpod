@@ -95,6 +95,7 @@ func daemonset(ctx *common.RenderContext) ([]runtime.Object, error) {
 					EnableServiceLinks:            pointer.Bool(false),
 					DNSPolicy:                     "ClusterFirst",
 					RestartPolicy:                 "Always",
+					ImagePullSecrets:              common.ImagePullSecrets(ctx),
 					TerminationGracePeriodSeconds: pointer.Int64(30),
 					InitContainers: []corev1.Container{
 						*common.InternalCAContainer(ctx),

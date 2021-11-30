@@ -72,6 +72,7 @@ func deployment(ctx *common.RenderContext) ([]runtime.Object, error) {
 						Affinity:           common.Affinity(cluster.AffinityLabelWorkspaceServices),
 						EnableServiceLinks: pointer.Bool(false),
 						ServiceAccountName: Component,
+						ImagePullSecrets:   common.ImagePullSecrets(ctx),
 						SecurityContext: &corev1.PodSecurityContext{
 							RunAsUser: pointer.Int64(31002),
 						},

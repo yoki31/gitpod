@@ -50,6 +50,7 @@ func deployment(ctx *common.RenderContext) ([]runtime.Object, error) {
 						DNSPolicy:                     "ClusterFirst",
 						RestartPolicy:                 "Always",
 						TerminationGracePeriodSeconds: pointer.Int64(30),
+						ImagePullSecrets:              common.ImagePullSecrets(ctx),
 						Volumes: []corev1.Volume{{
 							Name:         "cloudsql",
 							VolumeSource: corev1.VolumeSource{EmptyDir: &corev1.EmptyDirVolumeSource{}},

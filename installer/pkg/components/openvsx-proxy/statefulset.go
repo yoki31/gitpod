@@ -57,6 +57,7 @@ func statefulset(ctx *common.RenderContext) ([]runtime.Object, error) {
 					DNSPolicy:                     "ClusterFirst",
 					RestartPolicy:                 "Always",
 					TerminationGracePeriodSeconds: pointer.Int64(30),
+					ImagePullSecrets:              common.ImagePullSecrets(ctx),
 					Volumes: []v1.Volume{{
 						Name: "config",
 						VolumeSource: v1.VolumeSource{

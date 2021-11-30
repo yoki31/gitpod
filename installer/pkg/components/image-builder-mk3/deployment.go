@@ -85,6 +85,7 @@ func deployment(ctx *common.RenderContext) ([]runtime.Object, error) {
 					DNSPolicy:                     "ClusterFirst",
 					RestartPolicy:                 "Always",
 					TerminationGracePeriodSeconds: pointer.Int64(30),
+					ImagePullSecrets:              common.ImagePullSecrets(ctx),
 					Volumes: append([]corev1.Volume{
 						{
 							Name: "configuration",

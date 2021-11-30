@@ -33,6 +33,7 @@ func job(ctx *common.RenderContext) ([]runtime.Object, error) {
 					RestartPolicy:      corev1.RestartPolicyNever,
 					ServiceAccountName: Component,
 					EnableServiceLinks: pointer.Bool(false),
+					ImagePullSecrets:   common.ImagePullSecrets(ctx),
 					// The init container is designed to emulate Helm hooks
 					InitContainers: []corev1.Container{*common.DatabaseWaiterContainer(ctx)},
 					Containers: []corev1.Container{{

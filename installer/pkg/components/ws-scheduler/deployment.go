@@ -54,6 +54,7 @@ func deployment(ctx *common.RenderContext) ([]runtime.Object, error) {
 					SecurityContext: &corev1.PodSecurityContext{
 						RunAsUser: pointer.Int64(31002),
 					},
+					ImagePullSecrets: common.ImagePullSecrets(ctx),
 					Volumes: []corev1.Volume{{
 						Name: "config",
 						VolumeSource: corev1.VolumeSource{

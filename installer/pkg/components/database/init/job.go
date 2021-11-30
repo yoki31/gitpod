@@ -37,6 +37,7 @@ func job(ctx *common.RenderContext) ([]runtime.Object, error) {
 					RestartPolicy:      corev1.RestartPolicyNever,
 					ServiceAccountName: Component,
 					EnableServiceLinks: pointer.Bool(false),
+					ImagePullSecrets:   common.ImagePullSecrets(ctx),
 					Volumes: []corev1.Volume{{
 						Name: sqlInitScripts,
 						VolumeSource: corev1.VolumeSource{ConfigMap: &corev1.ConfigMapVolumeSource{

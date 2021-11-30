@@ -74,6 +74,7 @@ func deployment(ctx *common.RenderContext) ([]runtime.Object, error) {
 						Affinity:           common.Affinity(cluster.AffinityLabelWorkspaceServices),
 						ServiceAccountName: Component,
 						EnableServiceLinks: pointer.Bool(false),
+						ImagePullSecrets:   common.ImagePullSecrets(ctx),
 						Volumes: []corev1.Volume{{
 							Name:         "cache",
 							VolumeSource: corev1.VolumeSource{EmptyDir: &corev1.EmptyDirVolumeSource{}},

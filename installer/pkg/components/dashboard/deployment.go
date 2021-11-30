@@ -46,6 +46,7 @@ func deployment(ctx *common.RenderContext) ([]runtime.Object, error) {
 						DNSPolicy:                     "ClusterFirst",
 						RestartPolicy:                 "Always",
 						TerminationGracePeriodSeconds: pointer.Int64(30),
+						ImagePullSecrets:              common.ImagePullSecrets(ctx),
 						Containers: []corev1.Container{{
 							Name:            Component,
 							Image:           common.ImageName(ctx.Config.Repository, Component, ctx.VersionManifest.Components.Dashboard.Version),

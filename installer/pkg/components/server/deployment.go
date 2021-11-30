@@ -64,6 +64,7 @@ func deployment(ctx *common.RenderContext) ([]runtime.Object, error) {
 						PriorityClassName:  common.SystemNodeCritical,
 						ServiceAccountName: Component,
 						EnableServiceLinks: pointer.Bool(false),
+						ImagePullSecrets:   common.ImagePullSecrets(ctx),
 						// todo(sje): conditionally add github-app-cert-secret in
 						// todo(sje): do we need to cater for serverContainer.volumeMounts from values.yaml?
 						Volumes: []corev1.Volume{{
