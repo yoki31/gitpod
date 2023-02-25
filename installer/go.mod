@@ -22,7 +22,7 @@ require (
 	github.com/jetstack/cert-manager v1.4.4
 	github.com/spf13/cobra v1.2.1
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
-	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	helm.sh/helm/v3 v3.6.1-0.20210915004119-9fafb4ad6811
 	k8s.io/api v0.22.2
