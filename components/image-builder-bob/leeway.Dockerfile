@@ -1,8 +1,8 @@
 # Copyright (c) 2021 Gitpod GmbH. All rights reserved.
 # Licensed under the GNU Affero General Public License (AGPL).
-# See License-AGPL.txt in the project root for license information.
+# See License.AGPL.txt in the project root for license information.
 
-FROM moby/buildkit:v0.9.3
+FROM eu.gcr.io/gitpod-core-dev/build/buildkit:v0.12.2-gitpod.1
 
 USER root
 RUN apk --no-cache add sudo bash \
@@ -23,6 +23,11 @@ RUN mkdir /ide
 COPY ide-startup.sh /ide/startup.sh
 COPY supervisor-ide-config.json /ide/
 
+ARG __GIT_COMMIT
+ARG VERSION
+
+ENV GITPOD_BUILD_GIT_COMMIT=${__GIT_COMMIT}
+ENV GITPOD_BUILD_VERSION=${VERSION}
 # sudo buildctl-daemonless.sh
 ENTRYPOINT [ "/app/bob" ]
 CMD [ "build" ]

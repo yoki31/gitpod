@@ -1,6 +1,6 @@
 // Copyright (c) 2021 Gitpod GmbH. All rights reserved.
 // Licensed under the GNU Affero General Public License (AGPL).
-// See License-AGPL.txt in the project root for license information.
+// See License.AGPL.txt in the project root for license information.
 
 package cmd
 
@@ -20,6 +20,7 @@ import (
 var proxyOpts struct {
 	BaseRef, TargetRef string
 	Auth               string
+	AdditionalAuth     string
 }
 
 // proxyCmd represents the build command
@@ -30,12 +31,17 @@ var proxyCmd = &cobra.Command{
 		log.Init("bob", "", true, os.Getenv("SUPERVISOR_DEBUG_ENABLE") == "true")
 		log := log.WithField("command", "proxy")
 
-		authP, err := proxy.NewAuthorizerFromEnvVar(proxyOpts.Auth)
+		authP, err := proxy.NewAuthorizerFromDockerEnvVar(proxyOpts.Auth)
 		if err != nil {
 			log.WithError(err).WithField("auth", proxyOpts.Auth).Fatal("cannot unmarshal auth")
 		}
+		authA, err := proxy.NewAuthorizerFromEnvVar(proxyOpts.AdditionalAuth)
+		if err != nil {
+			log.WithError(err).WithField("auth", proxyOpts.Auth).Fatal("cannot unmarshal auth")
+		}
+		authP = authP.AddIfNotExists(authA)
 
-		baseref, err := reference.ParseNamed(proxyOpts.BaseRef)
+		baseref, err := reference.ParseNormalizedNamed(proxyOpts.BaseRef)
 		if err != nil {
 			log.WithError(err).Fatal("cannot parse base ref")
 		}
@@ -43,7 +49,7 @@ var proxyCmd = &cobra.Command{
 		if r, ok := baseref.(reference.NamedTagged); ok {
 			basetag = r.Tag()
 		}
-		targetref, err := reference.ParseNamed(proxyOpts.TargetRef)
+		targetref, err := reference.ParseNormalizedNamed(proxyOpts.TargetRef)
 		if err != nil {
 			log.WithError(err).Fatal("cannot parse target ref")
 		}
@@ -53,6 +59,7 @@ var proxyCmd = &cobra.Command{
 		}
 
 		auth := func() docker.Authorizer { return docker.NewDockerAuthorizer(docker.WithAuthCreds(authP.Authorize)) }
+		mirrorAuth := func() docker.Authorizer { return docker.NewDockerAuthorizer(docker.WithAuthCreds(authA.Authorize)) }
 		prx, err := proxy.NewProxy(&url.URL{Host: "localhost:8080", Scheme: "http"}, map[string]proxy.Repo{
 			"base": {
 				Host: reference.Domain(baseref),
@@ -66,7 +73,7 @@ var proxyCmd = &cobra.Command{
 				Tag:  targettag,
 				Auth: auth,
 			},
-		})
+		}, mirrorAuth)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -87,4 +94,5 @@ func init() {
 	proxyCmd.Flags().StringVar(&proxyOpts.BaseRef, "base-ref", os.Getenv("WORKSPACEKIT_BOBPROXY_BASEREF"), "ref of the base image")
 	proxyCmd.Flags().StringVar(&proxyOpts.TargetRef, "target-ref", os.Getenv("WORKSPACEKIT_BOBPROXY_TARGETREF"), "ref of the target image")
 	proxyCmd.Flags().StringVar(&proxyOpts.Auth, "auth", os.Getenv("WORKSPACEKIT_BOBPROXY_AUTH"), "authentication to use")
+	proxyCmd.Flags().StringVar(&proxyOpts.AdditionalAuth, "additional-auth", os.Getenv("WORKSPACEKIT_BOBPROXY_ADDITIONALAUTH"), "additional authentication to use")
 }

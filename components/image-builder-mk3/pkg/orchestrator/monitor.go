@@ -1,6 +1,6 @@
 // Copyright (c) 2021 Gitpod GmbH. All rights reserved.
 // Licensed under the GNU Affero General Public License (AGPL).
-// See License-AGPL.txt in the project root for license information.
+// See License.AGPL.txt in the project root for license information.
 
 package orchestrator
 
@@ -26,8 +26,9 @@ import (
 )
 
 const (
-	annotationRef     = "ref"
-	annotationBaseRef = "baseref"
+	annotationRef       = "ref"
+	annotationBaseRef   = "baseref"
+	annotationManagedBy = "managed-by"
 )
 
 type orchestrator interface {
@@ -70,14 +71,17 @@ func (m *buildMonitor) Run() {
 	for {
 		wss, err := m.wsman.GetWorkspaces(ctx, &wsmanapi.GetWorkspacesRequest{
 			MustMatch: &wsmanapi.MetadataFilter{
-				Owner: buildWorkspaceOwnerID,
+				Annotations: map[string]string{
+					annotationManagedBy: buildWorkspaceManagerID,
+				},
 			},
 		})
 		if err != nil {
 			log.WithError(err).Info("cannot get running builds from ws-manager - retrying")
-			time.Sleep(5 * time.Second)
+			time.Sleep(1 * time.Second)
 			continue
 		}
+
 		m.runningBuildsMu.Lock()
 		m.runningBuilds = make(map[string]*runningBuild, len(wss.Status))
 		m.runningBuildsMu.Unlock()
@@ -87,7 +91,9 @@ func (m *buildMonitor) Run() {
 
 		sub, err := m.wsman.Subscribe(ctx, &wsmanapi.SubscribeRequest{
 			MustMatch: &wsmanapi.MetadataFilter{
-				Owner: buildWorkspaceOwnerID,
+				Annotations: map[string]string{
+					annotationManagedBy: buildWorkspaceManagerID,
+				},
 			},
 		})
 		if err != nil {
@@ -100,7 +106,7 @@ func (m *buildMonitor) Run() {
 			msg, err := sub.Recv()
 			if err != nil {
 				log.WithError(err).Info("connection to ws-manager lost - retrying")
-				time.Sleep(5 * time.Second)
+				time.Sleep(1 * time.Second)
 				break
 			}
 
@@ -202,6 +208,12 @@ func extractBuildStatus(status *wsmanapi.WorkspaceStatus) *api.BuildInfo {
 		BaseRef:   status.Metadata.Annotations[annotationBaseRef],
 		Status:    s,
 		StartedAt: status.Metadata.StartedAt.Seconds,
+		LogInfo: &api.LogInfo{
+			Url: status.Spec.Url,
+			Headers: map[string]string{
+				"x-gitpod-owner-token": status.Auth.OwnerToken,
+			},
+		},
 	}
 }
 
@@ -220,7 +232,7 @@ func extractBuildResponse(status *wsmanapi.WorkspaceStatus) *api.BuildResponse {
 		info = extractBuildStatus(status)
 		msg  = status.Message
 	)
-	if status.Phase == wsmanapi.WorkspacePhase_STOPPING {
+	if status.Phase == wsmanapi.WorkspacePhase_STOPPING || status.Phase == wsmanapi.WorkspacePhase_STOPPED {
 		if status.Conditions.Failed != "" {
 			msg = status.Conditions.Failed
 		} else if status.Conditions.HeadlessTaskFailed != "" {
@@ -372,7 +384,7 @@ func findTaskLogURL(ctx context.Context, ideURL, authToken string) (taskLogURL s
 			// gRPC-web race in supervisor?
 			return true, nil
 		}
-		if resp.StatusCode == http.StatusNotFound {
+		if resp != nil && resp.StatusCode == http.StatusNotFound {
 			// We're too quick to connect - ws-proxy doesn't keep up
 			return true, nil
 		}
